@@ -57,6 +57,13 @@ Shared context for all AI agents working on this repo.
 - **Production only**: `sitemap.xml` generated + `robots.txt` with `Allow: /`
 - **Preview / dev**: no `sitemap.xml`; `robots.txt` blocks all crawlers (`Disallow: /`)
 
+## Modal / Dialog
+
+- `src/components/Modal/` — wraps native `<dialog>` element; no provider needed
+- Props: `isOpen`, `onClose`, `title` (optional), `children`
+- Closes on: ✕ button, Escape key, backdrop click; locks body scroll while open
+- Tests must mock `HTMLDialogElement.prototype.showModal` and `.close` — jsdom does not implement them
+
 ## Skeleton loader
 
 - `src/components/Skeleton/` — no provider needed, import directly
@@ -105,4 +112,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-23 — typography tokens: --font-size-h1 through h4, line-height-*, letter-spacing-*; body and h1-h4 wired up in global.css*
+*Last updated: 2026-03-23 — Modal component (native dialog, Escape/backdrop/✕ close, scroll lock, fade animation)*

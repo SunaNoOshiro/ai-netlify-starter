@@ -43,6 +43,9 @@ const en = {
   themeSwitchToLight: 'Switch to light mode',
   themeSwitchToAuto:  'Switch to system mode',
 
+  // Modal
+  modalClose: 'Close',
+
   // Toast notifications
   toastDismiss: 'Dismiss notification',
 

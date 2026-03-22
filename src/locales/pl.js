@@ -43,6 +43,9 @@ const pl = {
   themeSwitchToLight: 'Przełącz na tryb jasny',
   themeSwitchToAuto:  'Użyj ustawień systemowych',
 
+  // Modal
+  modalClose: 'Zamknij',
+
   // Powiadomienia toast
   toastDismiss: 'Zamknij powiadomienie',
 

@@ -1,0 +1,63 @@
+.dialog {
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: 0;
+  max-width: 560px;
+  width: calc(100% - var(--space-xl));
+  box-shadow: var(--shadow-lg);
+  background: var(--color-bg);
+  color: var(--color-text-base);
+  animation: fadeIn 0.15s ease;
+}
+
+/* ::backdrop does not inherit CSS custom properties */
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.15s ease;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-lg) var(--space-lg) 0;
+  gap: var(--space-md);
+}
+
+.title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-base);
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  padding: var(--space-xs);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.closeBtn:hover {
+  color: var(--color-text-base);
+}
+
+.body {
+  padding: var(--space-lg);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

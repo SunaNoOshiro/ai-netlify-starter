@@ -55,6 +55,7 @@ src/
     Toast/              — toast notification UI; logic in src/lib/toast.jsx
     CookieBanner/       — GDPR consent banner; logic in src/lib/cookieConsent.jsx
     Skeleton/           — shimmer loading placeholder for async data
+    Modal/              — accessible dialog; wraps native <dialog> element
     AboutPage/          — example second page (copy this pattern when adding pages)
     PageHeader/         — home page hero section (GSAP animations)
     MyComponent/
@@ -388,6 +389,36 @@ import Skeleton from '../Skeleton'
 ```
 
 No provider, no context — import and use directly. `aria-hidden="true"` is set automatically.
+
+---
+
+## Modal / Dialog
+
+Use `<Modal>` for popups, confirmations, and forms:
+
+```jsx
+import { useState } from 'react'
+import Modal from '../Modal'
+
+export default function MyComponent() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open</button>
+      <Modal isOpen={open} onClose={() => setOpen(false)} title="Confirm delete">
+        <p>This action cannot be undone.</p>
+        <button onClick={() => setOpen(false)}>Cancel</button>
+        <button onClick={handleDelete}>Delete</button>
+      </Modal>
+    </>
+  )
+}
+```
+
+- Closes on: ✕ button, Escape key, backdrop click
+- Locks body scroll while open; restores on close
+- `title` is optional — omit for a bare container
+- Tests must mock `HTMLDialogElement.prototype.showModal` and `.close` (jsdom does not implement them)
 
 ---
 

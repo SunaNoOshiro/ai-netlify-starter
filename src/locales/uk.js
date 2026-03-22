@@ -43,6 +43,9 @@ const uk = {
   themeSwitchToLight: 'Перейти до світлого режиму',
   themeSwitchToAuto:  'Використовувати системні налаштування',
 
+  // Модальне вікно
+  modalClose: 'Закрити',
+
   // Сповіщення toast
   toastDismiss: 'Закрити сповіщення',
 

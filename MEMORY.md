@@ -47,6 +47,13 @@ Shared context for all AI agents working on this repo.
 - `HelmetProvider` is mounted in `main.jsx` (outermost provider)
 - Tests that render a component using `SEO` must wrap with `<HelmetProvider>` from `react-helmet-async`
 - Title format: `"Page Title | Site Name"` (auto-combined in `SEO.jsx`)
+- `og:image` and `twitter:image` only render when `VITE_APP_URL` is set (absolute URL required by social scrapers)
+- `<html lang>` is set dynamically by `I18nProvider` via `useEffect` whenever the locale changes
+- `sitemap.xml` and `robots.txt` are both **auto-generated** at build time — never create static versions in `public/`
+- Plugin logic lives in `vite.plugins.js`; the core parser `parseRoutePaths(src)` is a pure function tested in `test/vite-plugins.test.js`
+- Routes are parsed from `<Route path="...">` in `src/App.jsx` automatically — no manual list to maintain; supports multi-line Route declarations
+- Build output verified by `test/build.integration.test.js` (runs `npm run build`, checks `dist/` files)
+- Both files use `hostname` from `VITE_APP_URL` (fallback: `https://example.com`)
 
 ## ErrorBoundary
 
@@ -71,4 +78,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — added SEO component (react-helmet-async), ErrorBoundary with non-prod debug info, BuildBadge hidden in production (console.info only), Layout/Nav/Footer/AboutPage/NotFound*
+*Last updated: 2026-03-22 — SEO complete: html[lang], og:image+twitter:card, robots.txt+sitemap auto-generated from App.jsx routes; unit + build integration tests added*

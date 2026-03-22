@@ -63,8 +63,8 @@ src/
     global.css          — all design tokens as CSS custom properties + utility classes, imported once in main.jsx
   config/index.js       — app config from VITE_* env vars
 test/
-  setup.js              — Vitest global setup
-  *.integration.test.jsx — integration tests only (unit tests live in component folders)
+  setup.js                     — Vitest global setup
+  *.integration.test.{js,jsx}  — integration tests only (unit tests live in component folders)
 features/
   *.feature             — Gherkin BDD scenarios
   steps/                — Playwright step definitions
@@ -73,6 +73,7 @@ public/
   _redirects            — Netlify SPA rule: /* /index.html 200
   images/               — static images → /images/<file>
   images/placeholders/  — fallback SVGs for missing images
+vite.plugins.js         — custom Vite plugins: sitemapPlugin + robotsPlugin (generated at build time)
 .github/
   workflows/deploy.yml  — build + deploy only, no tests
   hooks/pre-commit      — test gate (npm run setup-hooks to install)
@@ -355,3 +356,4 @@ Examples: `feat: add hero image component` · `fix: block form on preview` · `s
 - Add new locale keys to only one or two locale files — always update all three.
 - Run `npm test` in CI — it runs only via the pre-commit hook.
 - Modify `src/version.js` — it is auto-generated at build time.
+- Add `robots.txt` or `sitemap.xml` to `public/` — both are generated at build time by `vite.plugins.js`.

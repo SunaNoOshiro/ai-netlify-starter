@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import en from '../locales/en'
 import pl from '../locales/pl'
 import uk from '../locales/uk'
@@ -22,6 +22,10 @@ const I18nContext = createContext(null)
 
 export function I18nProvider({ children }) {
   const [lang, setLang] = useState(getInitialLang)
+
+  useEffect(() => {
+    document.documentElement.lang = lang
+  }, [lang])
 
   function switchLang(code) {
     localStorage.setItem('lang', code)

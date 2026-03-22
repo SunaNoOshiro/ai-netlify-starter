@@ -183,8 +183,12 @@ jobs:
               per_page:    100,
             });
 
+            const headSha = context.payload.pull_request.head.sha;
+
             const toDelete = deployments.filter(d =>
-              d.ref === branch || d.ref === `refs/heads/${branch}`
+              d.ref === branch ||
+              d.ref === `refs/heads/${branch}` ||
+              d.sha === headSha
             );
 
             for (const deployment of toDelete) {

@@ -183,6 +183,9 @@ jobs:
               per_page:    100,
             });
 
+            console.log('branch:', branch);
+            console.log('deployments found:', deployments.map(d => ({ id: d.id, ref: d.ref, sha: d.sha })));
+
             const toDelete = deployments.filter(d =>
               d.ref === branch || d.ref === `refs/heads/${branch}`
             );

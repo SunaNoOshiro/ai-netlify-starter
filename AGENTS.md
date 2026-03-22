@@ -16,6 +16,9 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 - **i18n** — EN / PL / UK, switchable in the UI
 - **Contact form** — Netlify Forms (blocked on preview to save quota)
 - **Build metadata** — branch, commit, env, build time visible in the UI footer
+- **SEO** — per-page `<title>` + `<meta description>`; `sitemap.xml` + `robots.txt` auto-generated at build time (production only; previews are blocked from crawlers)
+- **Toast notifications** — `useToast()` hook, available app-wide via `ToastProvider` in `main.jsx`
+- **Cookie consent** — GDPR banner, disabled by default; enable with `VITE_COOKIE_CONSENT=true`
 
 ---
 
@@ -24,6 +27,8 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 | Layer | Tech |
 |---|---|
 | Frontend | React 18 + Vite 5 |
+| Routing | React Router v6 (`BrowserRouter` in `main.jsx`) |
+| SEO | `react-helmet-async` — `<SEO title="" description="">` component per page |
 | Styling | Tailwind CSS v4 + CSS Modules + CSS custom properties (`src/styles/global.css`) |
 | Animations | GSAP + @gsap/react (ScrollTrigger included) |
 | Tests | Vitest + jsdom + @testing-library/react |
@@ -36,11 +41,23 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 
 ```
 src/
-  App.jsx               — composition root only, no logic
+  App.jsx               — route definitions only (Routes + Route), no logic
   App.module.css
-  main.jsx              — entry point + providers
+  main.jsx              — entry point + BrowserRouter + providers
   version.js            — build metadata, do not modify
   components/
+    Layout/             — persistent shell: Nav + <main> + Footer
+    Nav/                — sticky top bar: site name, nav links, theme/language switchers
+    Footer/             — copyright + BuildBadge
+    NotFound/           — 404 page, rendered by the * catch-all route
+    ErrorBoundary/      — catches React crashes; shows debug info in non-production only
+    SEO/                — per-page <title> + <meta description> via react-helmet-async
+    Toast/              — toast notification UI; logic in src/lib/toast.jsx
+    CookieBanner/       — GDPR consent banner; logic in src/lib/cookieConsent.jsx
+    Skeleton/           — shimmer loading placeholder for async data
+    Modal/              — accessible dialog; wraps native <dialog> element
+    AboutPage/          — example second page (copy this pattern when adding pages)
+    PageHeader/         — home page hero section (GSAP animations)
     MyComponent/
       MyComponent.jsx        — one default export, one responsibility, max ~80 lines
       MyComponent.module.css — scoped styles, named after component
@@ -53,12 +70,17 @@ src/
     global.css          — all design tokens as CSS custom properties + utility classes, imported once in main.jsx
   config/index.js       — app config from VITE_* env vars
 test/
-  setup.js              — Vitest global setup
-  *.integration.test.jsx — integration tests only (unit tests live in component folders)
+  setup.js                     — Vitest global setup
+  *.integration.test.{js,jsx}  — integration tests only (unit tests live in component folders)
+features/
+  *.feature             — Gherkin BDD scenarios
+  steps/                — Playwright step definitions
 public/
   logo.svg · favicon.svg
+  _redirects            — Netlify SPA rule: /* /index.html 200
   images/               — static images → /images/<file>
   images/placeholders/  — fallback SVGs for missing images
+vite.plugins.js         — custom Vite plugins: sitemapPlugin + robotsPlugin (generated at build time)
 .github/
   workflows/deploy.yml  — build + deploy only, no tests
   hooks/pre-commit      — test gate (npm run setup-hooks to install)
@@ -75,9 +97,23 @@ npm run test:watch     # watch mode
 npm run test:coverage  # coverage → coverage/
 npm run test:bdd       # BDD acceptance tests (Playwright + Gherkin)
 npm run test:bdd:ui    # BDD tests in headed browser (for debugging)
-npm run build          # production build → dist/
+npm run build          # production build → dist/ (also generates sitemap.xml + robots.txt)
 npm run setup-hooks    # install pre-commit hook (once after clone)
 ```
+
+---
+
+## Environment variables
+
+All `VITE_*` variables are embedded into the browser bundle at build time. See `.env.example` for the full list.
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_APP_NAME` | no | Display name used in Nav, page title, footer. Default: `AI Starter` |
+| `VITE_APP_URL` | no | Production domain (e.g. `https://example.com`). Used for `og:image` and `sitemap.xml`. Netlify's `URL` env var is used as an automatic fallback — only set this if you have a custom domain |
+| `VITE_COOKIE_CONSENT` | no | Set to `true` to show the GDPR cookie consent banner. Default: `false` (hidden) |
+| `VITE_ENV` | CI only | One of `development` \| `preview` \| `production`. Injected by GitHub Actions |
+| `VITE_BRANCH`, `VITE_COMMIT`, `VITE_BUILD_TIME` | CI only | Injected by GitHub Actions for the build badge |
 
 ---
 
@@ -111,6 +147,51 @@ Follow these steps exactly for every new component:
    ```
 6. Add any user-visible strings to **all three** locale files: `en.js`, `pl.js`, `uk.js`
 7. Import in the parent via `from '../MyComponent'` (the folder, never the internal file)
+
+---
+
+## Adding a new page
+
+Follow these steps exactly every time you add a page. The `AboutPage` component is the canonical example — read it before starting.
+
+1. **Create the component folder:** `src/components/PricingPage/`
+   - `PricingPage.jsx` — default export, one responsibility, max ~80 lines
+   - `PricingPage.module.css` — scoped styles, `var(--token-name)` only
+   - `PricingPage.test.jsx` — at minimum: renders without crashing, shows page title
+   - `index.js` — `export { default } from './PricingPage'`
+
+2. **Add SEO** — include the `SEO` component at the top of the JSX:
+   ```jsx
+   import SEO from '../SEO'
+   <SEO title={t.pricingMetaTitle} description={t.pricingMetaDesc} />
+   ```
+
+3. **Register the route** in `App.jsx`:
+   ```jsx
+   import PricingPage from './components/PricingPage'
+   <Route path="/pricing" element={<PricingPage />} />
+   ```
+
+4. **Add a nav link** in `Nav.jsx`:
+   ```jsx
+   <li><NavLink to="/pricing">{t.navPricing}</NavLink></li>
+   ```
+
+5. **Add locale keys** to **all three** files (`en.js`, `pl.js`, `uk.js`) at the same time.
+   Follow the naming convention — keys scoped to the page: `pricing<Section><Descriptor>`:
+   ```js
+   // en.js
+   pricingMetaTitle: 'Pricing',
+   pricingMetaDesc:  'See our plans and pricing.',
+   navPricing:       'Pricing',
+   pricingHeroTitle: 'Simple, transparent pricing',
+   // same keys in pl.js and uk.js with translated values
+   ```
+
+6. **Run `npm test`** — fix any failures before committing.
+
+No changes needed to `_redirects`, `BrowserRouter`, or `Layout` — they handle all routes automatically.
+The sitemap auto-updates: `vite.plugins.js` reads `<Route path="...">` entries from `App.jsx` at build time.
 
 ---
 
@@ -156,14 +237,35 @@ body { ... }                    /* global element styles */
 - State-driven variants (`.active`, `.open`) — never use inline styles for these
 
 Always use `var(--token-name)`. Never hardcode colors, spacing, or font sizes.
+
+**Typography quick reference:**
+
+| Token | Value | Use for |
+|---|---|---|
+| `--font-size-h1` | 48px | Page hero / display |
+| `--font-size-h2` | 36px | Page title |
+| `--font-size-h3` | 28px | Section heading |
+| `--font-size-h4` | 20px | Sub-heading |
+| `--font-size-md` | 16px | Large body / comfortable reading |
+| `--font-size-base` | 14px | Default body copy |
+| `--font-size-sm` | 12px | Helper text, secondary labels |
+| `--font-size-xs` | 11px | Captions, badges, fine print |
+| `--line-height-tight` | 1.2 | Headings |
+| `--line-height-normal` | 1.5 | Body (default) |
+| `--line-height-relaxed` | 1.75 | Long-form reading |
+| `--letter-spacing-tight` | -0.025em | Large headings |
+| `--letter-spacing-wide` | 0.05em | Labels, ALL CAPS |
+
 ```css
 /* correct */
 color: var(--color-text-muted);
 padding: var(--space-md);
+font-size: var(--font-size-h2);
 
 /* wrong */
 color: #64748b;
 padding: 16px;
+font-size: 36px;
 ```
 
 Use `@apply` to compose Tailwind utilities inside a module when inline classes would be too verbose:
@@ -211,11 +313,186 @@ Every user-visible string must go through i18n:
 
 ```js
 const { t } = useTranslation()
-<h1>{t.pageTitle}</h1>   // not: <h1>My Title</h1>
+<h1>{t.homeHeroTitle}</h1>   // not: <h1>My Title</h1>
 ```
 
 Add new keys to **all three** locale files at once: `en.js`, `pl.js`, `uk.js`. Never one without the others.
-Keys: `camelCase`, feature-scoped — e.g. `contactFormTitle`.
+
+**Key naming convention:** `<pageName><Section><Descriptor>` — always camelCase, always scoped.
+
+```js
+// Correct — unambiguous even in a large file
+homeHeroTitle
+homeFormName
+pricingHeroTitle
+pricingPlanBasicLabel
+
+// Wrong — too generic, collides as the app grows
+title
+formName
+label
+```
+
+The `AboutPage` (two localisable strings: `aboutLead`, `aboutBody`) is the minimal working example — read `src/locales/en.js` for the full key inventory.
+
+---
+
+## SEO
+
+Every page must include the `SEO` component to set the `<title>` and `<meta description>`:
+
+```jsx
+import SEO from '../SEO'
+
+export default function MyPage() {
+  const { t } = useTranslation()
+  return (
+    <div>
+      <SEO title={t.myPageTitle} description={t.myPageMetaDesc} />
+      {/* page content */}
+    </div>
+  )
+}
+```
+
+- `title` is combined with the site name automatically: `"My Page | Site Name"`
+- If `title` is omitted, only the site name is shown (use on the home page)
+- Add `myPageTitle` and `myPageMetaDesc` to **all three** locale files
+- Tests that render a component using `SEO` must wrap with `<HelmetProvider>` (from `react-helmet-async`)
+
+---
+
+## Data fetching
+
+Use `useFetch` for every API call. It handles loading state, errors, and request cancellation automatically.
+
+```jsx
+import { useFetch } from '../hooks/useFetch'
+import Skeleton from '../Skeleton'
+
+export default function ItemList() {
+  const { data, loading, error } = useFetch('/api/items')
+
+  if (loading) return <Skeleton lines={3} />
+  if (error)   return <p className="error">{error.message}</p>
+  return <ul>{data.map(item => <li key={item.id}>{item.name}</li>)}</ul>
+}
+```
+
+- `loading` starts `true` and goes `false` once the request settles
+- `error` is an `Error` object with `message` set to `"HTTP 404"` (or the network error message)
+- Pass `null` to skip fetching: `useFetch(id ? `/api/items/${id}` : null)`
+- The hook aborts the in-flight request when the component unmounts or the URL changes — no stale updates
+- Pair `loading` with `<Skeleton>` (see Skeleton section below)
+- Hook lives in `src/hooks/useFetch.js`; tests in `src/hooks/useFetch.test.js`
+
+---
+
+## Toast notifications
+
+Use `useToast()` to show success, error, warning, or info messages from any component:
+
+```jsx
+import { useToast } from '../lib/toast'
+
+export default function MyComponent() {
+  const { toast } = useToast()
+
+  function handleSave() {
+    toast.success('Saved!')           // auto-dismisses after 4 s
+    toast.error('Something failed')   // auto-dismisses after 6 s
+    toast.warning('Check your input') // auto-dismisses after 5 s
+    toast.info('Loading...')          // auto-dismisses after 4 s
+  }
+}
+```
+
+Pass a custom duration (ms) as a second argument: `toast.success('Done', { duration: 2000 })`.
+
+- `ToastProvider` is already mounted in `main.jsx` — no setup needed in individual components
+- Toast messages are plain strings passed by the caller — localise them at the call site with `t.keyName`
+- Tests that use `useToast()` must wrap with `<ToastProvider>` (inside `<I18nProvider>`)
+
+---
+
+## Cookie consent (GDPR)
+
+The banner is **disabled by default**. To enable it, set `VITE_COOKIE_CONSENT=true` in your environment.
+
+Gate analytics or tracking scripts behind the consent check:
+
+```jsx
+import { useCookieConsent } from '../lib/cookieConsent'
+
+export default function Analytics() {
+  const { hasConsented } = useCookieConsent()
+  if (!hasConsented) return null
+  // load analytics only after explicit acceptance
+}
+```
+
+---
+
+## Skeleton loader
+
+Use `<Skeleton>` while async data is fetching to prevent blank UI:
+
+```jsx
+import Skeleton from '../Skeleton'
+
+// Single elements
+<Skeleton />                          // full-width text line (default)
+<Skeleton variant="heading" />        // 60% wide, thicker
+<Skeleton variant="avatar" />         // 40×40 circle
+<Skeleton variant="image" />          // full-width 200px block
+<Skeleton variant="card" />           // full-width 120px block
+
+// Multiple text lines (last line is 70% wide)
+<Skeleton lines={3} />
+
+// Custom size
+<Skeleton width="120px" height="80px" />
+```
+
+No provider, no context — import and use directly. `aria-hidden="true"` is set automatically.
+
+---
+
+## Modal / Dialog
+
+Use `<Modal>` for popups, confirmations, and forms:
+
+```jsx
+import { useState } from 'react'
+import Modal from '../Modal'
+
+export default function MyComponent() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open</button>
+      <Modal isOpen={open} onClose={() => setOpen(false)} title="Confirm delete">
+        <p>This action cannot be undone.</p>
+        <button onClick={() => setOpen(false)}>Cancel</button>
+        <button onClick={handleDelete}>Delete</button>
+      </Modal>
+    </>
+  )
+}
+```
+
+- Closes on: ✕ button, Escape key, backdrop click
+- Locks body scroll while open; restores on close
+- `title` is optional — omit for a bare container
+- Tests must mock `HTMLDialogElement.prototype.showModal` and `.close` (jsdom does not implement them)
+
+---
+
+- `CookieConsentProvider` is already mounted in `main.jsx`
+- `consent`: `'accepted'` | `'declined'` | `null` (null = not yet decided)
+- `hasConsented`: `true` only when explicitly accepted — use this as the gate
+- Choice is persisted to `localStorage` key `cookie-consent`
+- Tests must mock `../../config` to set `cookieConsentEnabled: true`
 
 ---
 
@@ -295,3 +572,5 @@ Examples: `feat: add hero image component` · `fix: block form on preview` · `s
 - Add new locale keys to only one or two locale files — always update all three.
 - Run `npm test` in CI — it runs only via the pre-commit hook.
 - Modify `src/version.js` — it is auto-generated at build time.
+- Add `robots.txt` or `sitemap.xml` to `public/` — both are generated at build time by `vite.plugins.js`.
+- Modify the robots/sitemap behaviour without understanding the env logic — production gets `Allow: /` + sitemap; preview/dev gets `Disallow: /` and no sitemap.

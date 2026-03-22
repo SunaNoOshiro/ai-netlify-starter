@@ -2,8 +2,6 @@ import { useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { useTranslation } from '../../lib/i18n'
-import LanguageSwitcher from '../LanguageSwitcher'
-import ThemeSwitcher from '../ThemeSwitcher'
 import styles from './PageHeader.module.css'
 
 gsap.registerPlugin(useGSAP)
@@ -49,12 +47,7 @@ export default function PageHeader() {
   }, { scope: containerRef })
 
   return (
-    <header ref={containerRef} className={styles.header}>
-      <div className={styles.langRow}>
-        <LanguageSwitcher />
-        <ThemeSwitcher />
-      </div>
-
+    <section ref={containerRef} className={styles.header}>
       <img
         ref={logoRef}
         src="/logo.svg"
@@ -64,12 +57,12 @@ export default function PageHeader() {
         className={styles.logo}
       />
 
-      <h1 className={styles.title}>{t.projectName}</h1>
+      <h1 className={styles.title}>{t.homeHeroTitle}</h1>
       <p className={styles.desc}>
-        {t.projectDesc.split('\n').map((line, i) => (
+        {t.homeHeroSubtitle.split('\n').map((line, i) => (
           <span key={i}>{line}{i === 0 && <br />}</span>
         ))}
       </p>
-    </header>
+    </section>
   )
 }

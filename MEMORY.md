@@ -30,6 +30,7 @@ Shared context for all AI agents working on this repo.
 - Three locales: `en.js`, `pl.js`, `uk.js` in `src/locales/`
 - Every user-visible string (including `aria-label`, `placeholder`, `title`) must use `useTranslation()` → `t.keyName`
 - When adding a key: add to **all three** locale files at once. Never one without the others.
+- **Key naming convention:** `<pageName><Section><Descriptor>` camelCase — e.g. `homeHeroTitle`, `homeFormName`, `pricingPlanBasicLabel`. Never generic names like `title` or `label`.
 - Provider: `src/lib/i18n.jsx` — `I18nProvider` + `useTranslation`
 
 ## CI/CD
@@ -41,13 +42,82 @@ Shared context for all AI agents working on this repo.
 - Production deploy on merge to `main`
 - Build metadata injected at compile time: `__BRANCH__`, `__COMMIT__`, `__BUILD_TIME__`, `__ENV__`
 
+## SEO
+
+- `SEO` component wraps `react-helmet-async` — place it at the top of every page component
+- `HelmetProvider` is mounted in `main.jsx` (outermost provider)
+- Tests that render a component using `SEO` must wrap with `<HelmetProvider>` from `react-helmet-async`
+- Title format: `"Page Title | Site Name"` (auto-combined in `SEO.jsx`)
+- `og:image` and `twitter:image` only render when `VITE_APP_URL` is set (absolute URL required by social scrapers)
+- `<html lang>` is set dynamically by `I18nProvider` via `useEffect` whenever the locale changes
+- `sitemap.xml` and `robots.txt` are both **auto-generated** at build time — never create static versions in `public/`
+- Plugin logic lives in `vite.plugins.js`; the core parser `parseRoutePaths(src)` is a pure function tested in `test/vite-plugins.test.js`
+- Routes are parsed from `<Route path="...">` in `src/App.jsx` automatically — no manual list to maintain; supports multi-line Route declarations
+- Build output verified by `test/build.integration.test.js` (runs production + preview builds, checks `dist/` files)
+- Hostname priority: `VITE_APP_URL` → `URL` (Netlify's built-in) → `https://example.com`
+- **Production only**: `sitemap.xml` generated + `robots.txt` with `Allow: /`
+- **Preview / dev**: no `sitemap.xml`; `robots.txt` blocks all crawlers (`Disallow: /`)
+
+## Data fetching
+
+- `useFetch(url)` in `src/hooks/useFetch.js` — the one approved pattern for API calls
+- Returns `{ data, loading, error }`; `loading` starts `true`, `error` is an `Error` object
+- Pass `null` to skip fetching conditionally; aborts on unmount/url change via `AbortController`
+- Always pair `loading` with `<Skeleton>` and `error` with an inline message — never invent a different loading pattern
+
+## Modal / Dialog
+
+- `src/components/Modal/` — wraps native `<dialog>` element; no provider needed
+- Props: `isOpen`, `onClose`, `title` (optional), `children`
+- Closes on: ✕ button, Escape key, backdrop click; locks body scroll while open
+- Tests must mock `HTMLDialogElement.prototype.showModal` and `.close` — jsdom does not implement them
+
+## Skeleton loader
+
+- `src/components/Skeleton/` — no provider needed, import directly
+- Props: `variant` (`text`|`heading`|`avatar`|`image`|`card`), `lines`, `width`, `height`
+- `lines > 1` renders a stack; last line is always 70% wide for realism
+- Shimmer uses `--color-skeleton-base` / `--color-skeleton-shine` tokens (light + dark mode)
+- Always sets `aria-hidden="true"` — invisible to screen readers
+
+## Cookie consent (GDPR)
+
+- `CookieConsentProvider` + `useCookieConsent` in `src/lib/cookieConsent.jsx`; mounted in `main.jsx`
+- **Disabled by default** — set `VITE_COOKIE_CONSENT=true` to show the banner (`config.cookieConsentEnabled`)
+- `consent`: `'accepted'` | `'declined'` | `null`; persisted to `localStorage` key `cookie-consent`
+- `hasConsented`: `true` only when explicitly accepted — gate all analytics/tracking behind this
+- Tests must `vi.mock('../../config', () => ({ config: { cookieConsentEnabled: true } }))` to show the banner
+
+## Toast notifications
+
+- `ToastProvider` + `useToast` in `src/lib/toast.jsx`; visual component in `src/components/Toast/`
+- `ToastProvider` is mounted in `main.jsx` inside `I18nProvider` — available app-wide
+- API: `const { toast } = useToast()` → `toast.success/error/warning/info(message, { duration? })`
+- Default durations: success/info = 4 s, warning = 5 s, error = 6 s; pass `{ duration: ms }` to override
+- Toast messages are plain strings — localise at the call site with `t.keyName`
+- Tests using `useToast()` must wrap with `<ToastProvider>` inside `<I18nProvider>`
+
+## ErrorBoundary
+
+- Class component in `src/components/ErrorBoundary/` — wraps the entire app in `main.jsx`
+- Shows user-friendly fallback on any React crash
+- Shows collapsible `<details>` debug block (error + componentStack) only when `version.env !== 'production'`
+- Do not remove the `version.env` production guard — debug info must stay hidden in production
+
+## BuildBadge
+
+- Hidden in production: returns `null` and `console.info`s the build metadata instead
+- Visible in preview and development environments
+- Lives in `Footer` — do not move it to `PageHeader` or any other component
+
 ## Known gotchas
 
 - `window.matchMedia` is not available in jsdom — mocked in `test/setup.js`
 - `ThemeSwitcher` needs both `ThemeProvider` and `I18nProvider` in test wrappers
 - `PageHeader` test wrapper must include both providers
+- Components using `SEO` need `<HelmetProvider>` in their test wrappers
 - `src/version.js` is auto-generated — do not modify
 
 ---
 
-*Last updated: 2026-03-22 — added react-router-dom; BrowserRouter in main.jsx; App.jsx uses Routes with Home at / and NotFound at *; public/_redirects for Netlify SPA routing*
+*Last updated: 2026-03-23 — useFetch hook (loading/error/abort pattern); AGENTS.md data fetching section added*

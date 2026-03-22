@@ -38,7 +38,7 @@ export default function ContactForm() {
 
   return (
     <section ref={sectionRef} className={styles.section}>
-      <h3 className="section-heading">{t.formTitle}</h3>
+      <h3 className="section-heading">{t.homeFormTitle}</h3>
 
       {!isProduction && (
         <p className={styles.warning}>
@@ -57,10 +57,10 @@ export default function ContactForm() {
         className={styles.form}
       >
         <input type="hidden" name="form-name" value="contact" />
-        <input name="name"    type="text"  placeholder={t.formName}    required className={styles.input} />
-        <input name="email"   type="email" placeholder={t.formEmail}            className={styles.input} />
-        <textarea name="message"           placeholder={t.formMessage} rows={3} className={styles.textarea} />
-        <button type="submit" className={styles.btn}>{t.formSend}</button>
+        <input name="name"    type="text"  placeholder={t.homeFormName}    required className={styles.input} />
+        <input name="email"   type="email" placeholder={t.homeFormEmail}            className={styles.input} />
+        <textarea name="message"           placeholder={t.homeFormMessage} rows={3} className={styles.textarea} />
+        <button type="submit" className={styles.btn}>{t.homeFormSend}</button>
       </form>
     </section>
   )

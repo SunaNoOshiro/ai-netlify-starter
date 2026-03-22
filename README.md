@@ -16,6 +16,9 @@ A ready-made website template. Fork it, connect it to two free services, and you
 - **Contact form included** — visitors can message you, submissions land in your Netlify dashboard
 - **Ukrainian / English / Polish** — language switcher built in, easy to add more
 - **Placeholder images** — broken images show a clean fallback instead of a broken icon
+- **SEO ready** — per-page titles and descriptions, `sitemap.xml` and `robots.txt` generated automatically at build time; search engines are blocked from preview deploys
+- **Toast notifications** — `toast.success()` / `toast.error()` available everywhere, no setup needed
+- **Cookie consent banner** — GDPR-ready placeholder, off by default; enable with one environment variable when you add analytics
 
 ---
 
@@ -44,16 +47,15 @@ Example PR comment:
 ```
 🚀 Preview ready
 
-🔍 Preview: https://abc123--your-site.netlify.app
-🌍 Production: https://your-site.netlify.app
+| | |
+|---|---|
+| 🔍 Preview   | https://abc123--your-site.netlify.app |
+| 🌍 Production | https://your-site.netlify.app         |
+| 🌿 Branch    | my-feature                            |
+| 📝 Commit    | a1b2c3d                               |
+| 🕐 Built at  | 2026-03-22T14:00:00Z                  |
 
-👉 Compare:
-- Open Preview
-- Open Production
-
-| Branch   | my-feature      |
-| Commit   | a1b2c3d         |
-| Built at | 2026-03-22T...  |
+> Preview updates automatically on every push to this PR.
 ```
 
 ---
@@ -141,4 +143,5 @@ npm run dev        # opens http://localhost:5173
 
 - **Preview not updating?** — check the Actions tab in GitHub for errors
 - **Form not working?** — the contact form only accepts submissions on the live production site, not previews
+- **sitemap.xml showing `example.com`?** — this only appears on production builds; Netlify's `URL` variable is used automatically. If you have a custom domain, set `VITE_APP_URL=https://your-domain.com` in Netlify → Site configuration → Environment variables
 - **Something broken?** — open an issue in this repository

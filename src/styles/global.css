@@ -37,18 +37,37 @@
   --radius-lg: 8px;
   --radius-xl: 12px;
 
-  /* Typography */
+  /* Typography — font families */
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, monospace;
-  --font-size-xs:   11px;
-  --font-size-sm:   12px;
-  --font-size-base: 14px;
-  --font-size-md:   16px;
-  --font-size-lg:   20px;
-  --font-size-xl:   28px;
+
+  /* Typography — heading sizes (use for h1–h4 and hero text) */
+  --font-size-h1: 48px;
+  --font-size-h2: 36px;
+  --font-size-h3: 28px;
+  --font-size-h4: 20px;
+
+  /* Typography — body/UI sizes (use for body copy, labels, captions) */
+  --font-size-xs:   11px;  /* caption, badge, fine print */
+  --font-size-sm:   12px;  /* secondary label, helper text */
+  --font-size-base: 14px;  /* default body copy */
+  --font-size-md:   16px;  /* large body / comfortable reading */
+  --font-size-lg:   20px;  /* lead paragraph */
+
+  /* Typography — font weights */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
-  --font-weight-bold:   600;
+  --font-weight-bold:   700;
+
+  /* Typography — line heights */
+  --line-height-tight:   1.2;   /* headings */
+  --line-height-normal:  1.5;   /* body copy */
+  --line-height-relaxed: 1.75;  /* long-form reading */
+
+  /* Typography — letter spacing */
+  --letter-spacing-tight:  -0.025em;  /* large headings */
+  --letter-spacing-normal:  0em;      /* body */
+  --letter-spacing-wide:    0.05em;   /* labels, ALL CAPS */
 
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
@@ -58,10 +77,34 @@
   /* Transitions */
   --transition-fast:   all 0.15s ease;
   --transition-normal: all 0.25s ease;
+
+  /* Skeleton loader */
+  --color-skeleton-base:  #e2e8f0;
+  --color-skeleton-shine: #f8fafc;
+
+  /* Toast colours */
+  --color-toast-success-bg:   #dcfce7;
+  --color-toast-success-text: #166534;
+  --color-toast-error-bg:     #fee2e2;
+  --color-toast-error-text:   #991b1b;
+  --color-toast-warning-bg:   #fef9c3;
+  --color-toast-warning-text: #92400e;
+  --color-toast-info-bg:      #dbeafe;
+  --color-toast-info-text:    #1e40af;
 }
 
 /* Dark mode overrides — set via data-theme="dark" on <html> */
 [data-theme="dark"] {
+  --color-skeleton-base:  #1e293b;
+  --color-skeleton-shine: #334155;
+  --color-toast-success-bg:   #14532d;
+  --color-toast-success-text: #bbf7d0;
+  --color-toast-error-bg:     #7f1d1d;
+  --color-toast-error-text:   #fecaca;
+  --color-toast-warning-bg:   #78350f;
+  --color-toast-warning-text: #fef08a;
+  --color-toast-info-bg:      #1e3a8a;
+  --color-toast-info-text:    #bfdbfe;
   --color-primary:       #e2e8f0;
   --color-primary-hover: #f1f5f9;
   --color-white:         #1e293b;
@@ -80,8 +123,22 @@
 body {
   background-color: var(--color-bg);
   color: var(--color-text-base);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+h1, h2, h3, h4 {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text-base);
+}
+h1 { font-size: var(--font-size-h1); }
+h2 { font-size: var(--font-size-h2); }
+h3 { font-size: var(--font-size-h3); }
+h4 { font-size: var(--font-size-h4); }
 
 /* Utility classes — use when the same pattern appears in 3+ components */
 .section-heading {

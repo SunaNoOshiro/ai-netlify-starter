@@ -1,0 +1,60 @@
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: var(--shadow-lg);
+  flex-wrap: wrap;
+}
+
+.message {
+  flex: 1;
+  margin: 0;
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  min-width: 200px;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.accept,
+.decline {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.accept {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+}
+
+.accept:hover {
+  opacity: 0.9;
+}
+
+.decline {
+  background-color: transparent;
+  color: var(--color-white);
+  border-color: var(--color-white);
+  opacity: 0.8;
+}
+
+.decline:hover {
+  opacity: 1;
+}

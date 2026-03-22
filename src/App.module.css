@@ -1,0 +1,6 @@
+.wrapper {
+  font-family: var(--font-sans);
+  max-width: 640px;
+  margin: var(--space-xxl) auto;
+  padding: 0 var(--space-md);
+}

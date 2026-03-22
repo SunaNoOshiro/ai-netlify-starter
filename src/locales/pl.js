@@ -1,0 +1,23 @@
+const pl = {
+  // Strona
+  projectName: 'Nazwa projektu',
+  projectDesc: 'Zastąp tę stronę własną treścią.\nCI/CD, podgląd wdrożeń i Netlify Forms są już skonfigurowane.',
+
+  // Sekcja obrazów
+  imagesTitle: 'Obrazy zastępcze',
+  imageLabelFallback: 'Prawdziwy obraz (brakujący → zastępczy)',
+  imageLabelCard: 'Obraz zastępczy karty (400×300)',
+
+  // Formularz kontaktowy
+  formTitle: 'Formularz kontaktowy (Netlify Forms)',
+  formName: 'Imię',
+  formEmail: 'E-mail',
+  formMessage: 'Wiadomość',
+  formSend: 'Wyślij',
+  formAlert: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
+
+  // Informacje o buildzie
+  buildTitle: 'Informacje o buildzie',
+}
+
+export default pl

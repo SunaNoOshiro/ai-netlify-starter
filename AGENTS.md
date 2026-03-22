@@ -362,6 +362,32 @@ export default function MyPage() {
 
 ---
 
+## Data fetching
+
+Use `useFetch` for every API call. It handles loading state, errors, and request cancellation automatically.
+
+```jsx
+import { useFetch } from '../hooks/useFetch'
+import Skeleton from '../Skeleton'
+
+export default function ItemList() {
+  const { data, loading, error } = useFetch('/api/items')
+
+  if (loading) return <Skeleton lines={3} />
+  if (error)   return <p className="error">{error.message}</p>
+  return <ul>{data.map(item => <li key={item.id}>{item.name}</li>)}</ul>
+}
+```
+
+- `loading` starts `true` and goes `false` once the request settles
+- `error` is an `Error` object with `message` set to `"HTTP 404"` (or the network error message)
+- Pass `null` to skip fetching: `useFetch(id ? `/api/items/${id}` : null)`
+- The hook aborts the in-flight request when the component unmounts or the URL changes — no stale updates
+- Pair `loading` with `<Skeleton>` (see Skeleton section below)
+- Hook lives in `src/hooks/useFetch.js`; tests in `src/hooks/useFetch.test.js`
+
+---
+
 ## Toast notifications
 
 Use `useToast()` to show success, error, warning, or info messages from any component:

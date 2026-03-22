@@ -58,6 +58,13 @@ Shared context for all AI agents working on this repo.
 - **Production only**: `sitemap.xml` generated + `robots.txt` with `Allow: /`
 - **Preview / dev**: no `sitemap.xml`; `robots.txt` blocks all crawlers (`Disallow: /`)
 
+## Data fetching
+
+- `useFetch(url)` in `src/hooks/useFetch.js` — the one approved pattern for API calls
+- Returns `{ data, loading, error }`; `loading` starts `true`, `error` is an `Error` object
+- Pass `null` to skip fetching conditionally; aborts on unmount/url change via `AbortController`
+- Always pair `loading` with `<Skeleton>` and `error` with an inline message — never invent a different loading pattern
+
 ## Modal / Dialog
 
 - `src/components/Modal/` — wraps native `<dialog>` element; no provider needed
@@ -113,4 +120,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-23 — scoped locale key naming convention (homeHeroTitle, etc.); AboutPage expanded with aboutLead; ContactForm + ImageDemo updated to new keys; AGENTS.md "Adding a new page" checklist rewritten*
+*Last updated: 2026-03-23 — useFetch hook (loading/error/abort pattern); AGENTS.md data fetching section added*

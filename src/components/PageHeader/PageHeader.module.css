@@ -2,12 +2,6 @@
   margin-bottom: var(--space-md);
 }
 
-.langRow {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: var(--space-xl);
-}
-
 .logo {
   display: block;
   margin-bottom: var(--space-lg);

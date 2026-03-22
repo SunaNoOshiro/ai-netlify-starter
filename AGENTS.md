@@ -24,6 +24,7 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 | Layer | Tech |
 |---|---|
 | Frontend | React 18 + Vite 5 |
+| Routing | React Router v6 (`BrowserRouter` in `main.jsx`) |
 | Styling | Tailwind CSS v4 + CSS Modules + CSS custom properties (`src/styles/global.css`) |
 | Animations | GSAP + @gsap/react (ScrollTrigger included) |
 | Tests | Vitest + jsdom + @testing-library/react |
@@ -36,11 +37,16 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 
 ```
 src/
-  App.jsx               — composition root only, no logic
+  App.jsx               — route definitions only (Routes + Route), no logic
   App.module.css
-  main.jsx              — entry point + providers
+  main.jsx              — entry point + BrowserRouter + providers
   version.js            — build metadata, do not modify
   components/
+    Layout/             — persistent shell: Nav + <main> + Footer
+    Nav/                — sticky top bar: site name, nav links, theme/language switchers
+    Footer/             — copyright + BuildBadge
+    NotFound/           — 404 page, rendered by the * catch-all route
+    PageHeader/         — home page hero section (GSAP animations)
     MyComponent/
       MyComponent.jsx        — one default export, one responsibility, max ~80 lines
       MyComponent.module.css — scoped styles, named after component
@@ -55,8 +61,12 @@ src/
 test/
   setup.js              — Vitest global setup
   *.integration.test.jsx — integration tests only (unit tests live in component folders)
+features/
+  *.feature             — Gherkin BDD scenarios
+  steps/                — Playwright step definitions
 public/
   logo.svg · favicon.svg
+  _redirects            — Netlify SPA rule: /* /index.html 200
   images/               — static images → /images/<file>
   images/placeholders/  — fallback SVGs for missing images
 .github/
@@ -111,6 +121,27 @@ Follow these steps exactly for every new component:
    ```
 6. Add any user-visible strings to **all three** locale files: `en.js`, `pl.js`, `uk.js`
 7. Import in the parent via `from '../MyComponent'` (the folder, never the internal file)
+
+---
+
+## Adding a new page
+
+Follow these steps exactly every time you add a page:
+
+1. Create the page component: `src/components/AboutPage/AboutPage.jsx` (and `.module.css`, `.test.jsx`, `index.js`)
+2. Add a `<Route>` in `App.jsx`:
+   ```jsx
+   <Route path="/about" element={<AboutPage />} />
+   ```
+3. Add a `<NavLink>` in `Nav.jsx`:
+   ```jsx
+   <li><NavLink to="/about">{t.navAbout}</NavLink></li>
+   ```
+4. Add the nav label to **all three** locale files: `navAbout` in `en.js`, `pl.js`, `uk.js`
+5. Add any other page-specific strings to all three locale files
+6. Run `npm test` — fix any failures before committing
+
+No changes needed to `_redirects`, `BrowserRouter`, or `Layout` — they handle all routes automatically.
 
 ---
 

@@ -44,16 +44,15 @@ Example PR comment:
 ```
 🚀 Preview ready
 
-🔍 Preview: https://abc123--your-site.netlify.app
-🌍 Production: https://your-site.netlify.app
+| | |
+|---|---|
+| 🔍 Preview   | https://abc123--your-site.netlify.app |
+| 🌍 Production | https://your-site.netlify.app         |
+| 🌿 Branch    | my-feature                            |
+| 📝 Commit    | a1b2c3d                               |
+| 🕐 Built at  | 2026-03-22T14:00:00Z                  |
 
-👉 Compare:
-- Open Preview
-- Open Production
-
-| Branch   | my-feature      |
-| Commit   | a1b2c3d         |
-| Built at | 2026-03-22T...  |
+> Preview updates automatically on every push to this PR.
 ```
 
 ---

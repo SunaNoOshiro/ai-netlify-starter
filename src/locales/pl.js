@@ -16,6 +16,12 @@ const pl = {
   formSend: 'Wyślij',
   formAlert: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
 
+  // Nawigacja
+  navHome: 'Strona główna',
+
+  // Stopka
+  footerCopyright: '© {year} Nazwa projektu',
+
   // Strona 404
   notFoundMessage: 'Strona nie została znaleziona.',
   notFoundHome:    'Wróć na stronę główną',

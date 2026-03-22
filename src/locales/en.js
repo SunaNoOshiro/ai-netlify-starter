@@ -16,6 +16,12 @@ const en = {
   formSend: 'Send',
   formAlert: 'Form submitted! (connect Netlify to see real submissions)',
 
+  // Nav
+  navHome: 'Home',
+
+  // Footer
+  footerCopyright: '© {year} Your Project Name',
+
   // 404 page
   notFoundMessage: 'Page not found.',
   notFoundHome:    'Go back home',

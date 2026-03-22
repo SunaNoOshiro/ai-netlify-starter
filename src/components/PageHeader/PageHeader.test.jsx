@@ -19,8 +19,8 @@ describe('PageHeader', () => {
     expect(screen.getByAltText('logo')).toBeTruthy()
   })
 
-  it('renders the language switcher', () => {
+  it('renders the project description', () => {
     render(<PageHeader />, { wrapper })
-    expect(screen.getByText(/EN/)).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBeTruthy()
   })
 })

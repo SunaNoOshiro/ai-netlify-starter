@@ -50,4 +50,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — added react-router-dom; BrowserRouter in main.jsx; App.jsx uses Routes with Home at / and NotFound at *; public/_redirects for Netlify SPA routing*
+*Last updated: 2026-03-22 — added Layout (Nav + Footer); Nav has sticky top bar with site name, nav links, theme/language switchers; Footer has copyright + BuildBadge; PageHeader simplified to hero section only*

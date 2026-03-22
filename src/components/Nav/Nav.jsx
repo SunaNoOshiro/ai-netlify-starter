@@ -16,9 +16,11 @@ export default function Nav() {
             {t.navHome}
           </NavLink>
         </li>
-        {/* Add more pages here — e.g.:
-        <li><NavLink to="/about">{t.navAbout}</NavLink></li>
-        */}
+        <li>
+          <NavLink to="/about" className={({ isActive }) => isActive ? styles.active : undefined}>
+            {t.navAbout}
+          </NavLink>
+        </li>
       </ul>
 
       <div className={styles.controls}>

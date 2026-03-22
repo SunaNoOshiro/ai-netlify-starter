@@ -6,6 +6,7 @@ import PageHeader        from './components/PageHeader'
 import ImageDemo         from './components/ImageDemo'
 import ContactForm       from './components/ContactForm'
 import NotFound          from './components/NotFound'
+import AboutPage         from './components/AboutPage'
 
 console.log('[build]', version)
 
@@ -23,8 +24,9 @@ export default function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/"  element={<Home />} />
-        <Route path="*"  element={<NotFound />} />
+        <Route path="/"      element={<Home />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="*"      element={<NotFound />} />
       </Routes>
     </Layout>
   )

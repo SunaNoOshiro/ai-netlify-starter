@@ -17,7 +17,12 @@ const pl = {
   formAlert: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
 
   // Nawigacja
-  navHome: 'Strona główna',
+  navHome:  'Strona główna',
+  navAbout: 'O nas',
+
+  // Strona O nas
+  aboutTitle: 'O nas',
+  aboutBody:  'Zastąp tę stronę własną treścią.',
 
   // Stopka
   footerCopyright: '© {year} Nazwa projektu',

@@ -17,7 +17,12 @@ const en = {
   formAlert: 'Form submitted! (connect Netlify to see real submissions)',
 
   // Nav
-  navHome: 'Home',
+  navHome:  'Home',
+  navAbout: 'About',
+
+  // About page
+  aboutTitle: 'About',
+  aboutBody:  'Replace this page with your own content.',
 
   // Footer
   footerCopyright: '© {year} Your Project Name',

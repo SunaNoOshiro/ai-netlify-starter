@@ -16,9 +16,6 @@ const pl = {
   formSend: 'Wyślij',
   formAlert: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
 
-  // Informacje o buildzie
-  buildTitle: 'Informacje o buildzie',
-
   // Przełącznik motywu
   themeSwitchToDark:  'Przełącz na tryb ciemny',
   themeSwitchToLight: 'Przełącz na tryb jasny',

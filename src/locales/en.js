@@ -16,9 +16,6 @@ const en = {
   formSend: 'Send',
   formAlert: 'Form submitted! (connect Netlify to see real submissions)',
 
-  // Build info
-  buildTitle: 'Build info',
-
   // Theme switcher
   themeSwitchToDark:  'Switch to dark mode',
   themeSwitchToLight: 'Switch to light mode',

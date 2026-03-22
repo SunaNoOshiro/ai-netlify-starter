@@ -43,4 +43,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — added dark/light/auto theme switcher; pre-commit hook now enforces daily MEMORY.md review*
+*Last updated: 2026-03-22 — removed BuildInfo component (redundant with BuildBadge); removed buildTitle locale key*

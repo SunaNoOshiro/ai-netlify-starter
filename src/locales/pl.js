@@ -16,6 +16,10 @@ const pl = {
   formSend: 'Wyślij',
   formAlert: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
 
+  // Strona 404
+  notFoundMessage: 'Strona nie została znaleziona.',
+  notFoundHome:    'Wróć na stronę główną',
+
   // Przełącznik motywu
   themeSwitchToDark:  'Przełącz na tryb ciemny',
   themeSwitchToLight: 'Przełącz na tryb jasny',

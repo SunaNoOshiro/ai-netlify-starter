@@ -50,4 +50,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — improved PR comment step: switched to actions/github-script, deploy-id URL, update-or-create via HTML marker, production URL from vars.PRODUCTION_URL*
+*Last updated: 2026-03-22 — added react-router-dom; BrowserRouter in main.jsx; App.jsx uses Routes with Home at / and NotFound at *; public/_redirects for Netlify SPA routing*

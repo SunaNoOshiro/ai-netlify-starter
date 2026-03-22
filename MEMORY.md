@@ -105,4 +105,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-23 — Skeleton loader component (shimmer, 5 variants, lines prop, dark mode tokens)*
+*Last updated: 2026-03-23 — typography tokens: --font-size-h1 through h4, line-height-*, letter-spacing-*; body and h1-h4 wired up in global.css*

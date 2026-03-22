@@ -212,14 +212,35 @@ body { ... }                    /* global element styles */
 - State-driven variants (`.active`, `.open`) — never use inline styles for these
 
 Always use `var(--token-name)`. Never hardcode colors, spacing, or font sizes.
+
+**Typography quick reference:**
+
+| Token | Value | Use for |
+|---|---|---|
+| `--font-size-h1` | 48px | Page hero / display |
+| `--font-size-h2` | 36px | Page title |
+| `--font-size-h3` | 28px | Section heading |
+| `--font-size-h4` | 20px | Sub-heading |
+| `--font-size-md` | 16px | Large body / comfortable reading |
+| `--font-size-base` | 14px | Default body copy |
+| `--font-size-sm` | 12px | Helper text, secondary labels |
+| `--font-size-xs` | 11px | Captions, badges, fine print |
+| `--line-height-tight` | 1.2 | Headings |
+| `--line-height-normal` | 1.5 | Body (default) |
+| `--line-height-relaxed` | 1.75 | Long-form reading |
+| `--letter-spacing-tight` | -0.025em | Large headings |
+| `--letter-spacing-wide` | 0.05em | Labels, ALL CAPS |
+
 ```css
 /* correct */
 color: var(--color-text-muted);
 padding: var(--space-md);
+font-size: var(--font-size-h2);
 
 /* wrong */
 color: #64748b;
 padding: 16px;
+font-size: 36px;
 ```
 
 Use `@apply` to compose Tailwind utilities inside a module when inline classes would be too verbose:

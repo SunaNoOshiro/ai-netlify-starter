@@ -1,0 +1,28 @@
+.header {
+  margin-bottom: var(--space-md);
+}
+
+.langRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-xl);
+}
+
+.logo {
+  display: block;
+  margin-bottom: var(--space-lg);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-base);
+}
+
+.desc {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+  font-family: var(--font-sans);
+}

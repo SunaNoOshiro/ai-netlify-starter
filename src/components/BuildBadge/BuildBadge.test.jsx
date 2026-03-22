@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import BuildBadge from '../src/components/BuildBadge'
+import BuildBadge from './BuildBadge'
 
 describe('BuildBadge', () => {
   it('renders branch and commit from injected build constants', () => {

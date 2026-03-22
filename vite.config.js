@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
 
   // Build metadata baked in at compile time via GitHub Actions env vars.
   // Falls back to local dev defaults.
@@ -17,6 +18,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './test/setup.js',
+    exclude: ['**/node_modules/**', '**/dist/**', '.features-gen/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],

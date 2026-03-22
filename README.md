@@ -1,184 +1,94 @@
 # AI Netlify Starter
 
-Production-ready Vite + React starter with automated CI/CD on GitHub + Netlify (free tier).
+A ready-made website template. Fork it, connect it to two free services, and your site is live — with automatic updates every time you save changes.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/2a37781c-5a89-4301-b9fc-53601a4e810b/deploy-status)](https://ai-netlify-starter.netlify.app)
 
-**Production:** https://ai-netlify-starter.netlify.app
+**Live demo:** https://ai-netlify-starter.netlify.app
 
 ---
 
-## Architecture
+## What you get
 
-```
-GitHub Push / PR
-       │
-       ▼
-GitHub Actions (.github/workflows/deploy.yml)
-  1. npm ci
-  2. Inject build metadata as VITE_* env vars
-  3. npm run build  ←── vite.config.js embeds metadata as compile-time constants
-  4. Deploy to Netlify via nwtgck/actions-netlify
-       │
-       ├── PR?  → Deploy Preview URL  → sticky PR comment
-       └── main → Production deploy
-```
-
-**Build metadata flow:**
-
-```
-GitHub Actions env            vite.config.js define          Runtime (browser)
-─────────────────────         ───────────────────────────    ──────────────────
-VITE_BRANCH=feat/foo    →     __BRANCH__ = "feat/foo"    →   version.branch
-VITE_COMMIT=abc1234     →     __COMMIT__ = "abc1234"     →   version.commit
-VITE_BUILD_TIME=...     →     __BUILD_TIME__ = "..."     →   version.buildTime
-VITE_ENV=preview        →     __ENV__ = "preview"        →   version.env
-```
+- **Your site is live in minutes** — no servers to manage, no hosting bills (free tier)
+- **Changes go live automatically** — push a change and it deploys itself
+- **Safe previews before publishing** — every draft gets its own preview link so you can check it before it goes live
+- **Contact form included** — visitors can message you, submissions land in your Netlify dashboard
+- **Ukrainian / English / Polish** — language switcher built in, easy to add more
+- **Placeholder images** — broken images show a clean fallback instead of a broken icon
 
 ---
 
-## Project Structure
+## How it works (no tech required)
 
-```
-ai-netlify-starter/
-├── .github/
-│   ├── hooks/
-│   │   └── pre-commit          ← test gate hook (install with: npm run setup-hooks)
-│   └── workflows/
-│       └── deploy.yml          ← CI/CD pipeline
-├── public/
-│   ├── logo.svg                ← served at /logo.svg
-│   └── images/                 ← static images served at /images/<file>
-├── src/
-│   ├── components/
-│   │   └── BuildBadge.jsx      ← footer showing env/branch/commit
-│   ├── config/
-│   │   └── index.js            ← app config from env vars
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── version.js              ← build metadata accessor
-├── test/
-│   ├── setup.js                ← vitest global setup
-│   ├── version.test.js
-│   └── BuildBadge.test.jsx
-├── AGENTS.md                   ← instructions for Codex / AI agents
-├── .env.example
-├── .gitignore
-├── index.html
-├── netlify.toml
-├── package.json
-└── vite.config.js
-```
+1. You write your content and push it to GitHub (like saving to the cloud)
+2. GitHub automatically builds your site and sends it to Netlify
+3. Netlify puts it online — instantly
 
 ---
 
-## Setup
+## One-time setup (~15 minutes)
 
-### 1. GitHub
+You need two free accounts: **GitHub** (stores your code) and **Netlify** (hosts your site).
 
-```bash
-git clone <your-fork>
-cd ai-netlify-starter
-npm install
-```
+### Step 1 — Copy this template
 
-### 2. Netlify
+1. Click **Use this template → Create a new repository** at the top of this page
+2. Give your repository a name (e.g. `my-website`)
+3. Click **Create repository**
 
-**Option A — Netlify UI (recommended for first-time)**
+### Step 2 — Connect Netlify
 
-1. Go to app.netlify.com → **Add new site** → **Import from Git**
-2. Select your GitHub repo
-3. Build settings are read from `netlify.toml` automatically
-4. Click **Deploy site**
-5. Copy your **Site ID** from **Site settings → General → Site details**
+1. Go to [app.netlify.com](https://app.netlify.com) and sign up (free)
+2. Click **Add new site → Import from Git**
+3. Choose GitHub and select your new repository
+4. Click **Deploy** — Netlify reads the settings automatically
 
-**Option B — CLI**
+### Step 3 — Link GitHub to Netlify
 
-```bash
-npm install -g netlify-cli
-netlify login
-netlify init          # links repo, creates site
-netlify sites:list    # get your Project ID (used as NETLIFY_SITE_ID)
-```
+This is the one technical step. It lets GitHub trigger deploys automatically.
 
-### 3. GitHub Secrets
+**Get your Netlify tokens:**
 
-In your GitHub repo: **Settings → Secrets and variables → Actions → New repository secret**
-
-| Secret | Where to find it |
+| What you need | Where to find it |
 |---|---|
-| `NETLIFY_AUTH_TOKEN` | Netlify → User settings → Personal access tokens |
-| `NETLIFY_SITE_ID` | Netlify → Project configuration → General → **Project ID** (also shown as "Site ID") |
+| **Auth token** | Netlify → top-right avatar → User settings → Personal access tokens → New token |
+| **Project ID** | Netlify → your site → Site configuration → General → Project ID |
+
+**Add them to GitHub:**
+
+1. In your GitHub repository, go to **Settings → Secrets and variables → Actions**
+2. Click **New repository secret** and add:
+   - Name: `NETLIFY_AUTH_TOKEN` — paste your auth token
+   - Name: `NETLIFY_SITE_ID` — paste your project ID
+
+That's it. Push any change and your site updates automatically.
 
 ---
 
-## CI/CD Flows
+## Making it your own
 
-### PR → Preview
-
-```
-git checkout -b feat/my-feature
-# make changes
-git push origin feat/my-feature
-# open PR on GitHub
-#   → Actions builds & deploys preview
-#   → Bot comments: 🚀 https://deploy-preview-42--yoursite.netlify.app
-#   → Every new push to the PR updates the same comment
-```
-
-### Merge → Production
-
-```
-# Merge PR to main on GitHub
-#   → Actions triggers on push to main
-#   → production-deploy: true  →  deploys to https://yoursite.netlify.app
-```
+- **Replace the placeholder images** in `public/images/` with your own photos
+- **Edit the text** in `src/locales/en.js` (and `pl.js` / `uk.js` for other languages)
+- **Change colors and fonts** in `src/styles/tokens.js`
+- **Add your components** in `src/components/` — each section of the page is its own folder
 
 ---
 
-## Local Development
+## Working locally (optional)
+
+If you want to preview changes on your own computer before pushing:
 
 ```bash
-cp .env.example .env     # set VITE_APP_NAME if needed
-npm run setup-hooks      # install pre-commit test gate (one-time)
-npm run dev              # http://localhost:5173
+cp .env.example .env
+npm install
+npm run dev        # opens http://localhost:5173
 ```
-
-The `BuildBadge` footer will show `branch: local`, `commit: dev`, `env: development`.
 
 ---
 
-## Optional Improvements
+## Need help?
 
-### Multi-environment (dev / staging / prod)
-
-Add to `netlify.toml`:
-
-```toml
-[context.staging.environment]
-  VITE_ENV = "staging"
-```
-
-Create a `staging` branch — Netlify treats it as a branch deploy with its own URL.
-
-### Monorepo
-
-```
-apps/
-  web/          ← this starter
-  api/          ← separate backend
-packages/
-  shared/       ← shared types / utils
-```
-
-Use Turborepo with `turbo.json` to share the build cache.
-
-### Rollbacks
-
-In Netlify UI: **Deploys → click any past deploy → Publish deploy**
-
-Or via CLI:
-
-```bash
-netlify deploy --prod --dir=dist    # re-deploy any local build
-```
+- **Preview not updating?** — check the Actions tab in GitHub for errors
+- **Form not working?** — the contact form only accepts submissions on the live production site, not previews
+- **Something broken?** — open an issue in this repository

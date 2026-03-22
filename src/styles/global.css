@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/* Dark mode via data-theme attribute (matches ThemeProvider in src/lib/theme.jsx) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Design tokens — single source of truth for all visual values.
+   Import once in main.jsx. Use var(--token-name) in all CSS modules. */
+:root {
+  /* Colors */
+  --color-primary:       #0f172a;
+  --color-primary-hover: #1e293b;
+  --color-white:         #ffffff;
+  --color-bg:            #f8fafc;
+  --color-border:        #e2e8f0;
+  --color-border-focus:  #94a3b8;
+  --color-text-base:     #0f172a;
+  --color-text-muted:    #64748b;
+  --color-text-subtle:   #94a3b8;
+  --color-warning:       #f59e0b;
+  --color-success:       #166534;
+  --color-error:         #dc2626;
+  --color-code-bg:       #f1f5f9;
+  --color-code-text:     #475569;
+
+  /* Spacing */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-gap: 12px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  40px;
+  --space-xxl: 64px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
+  --font-size-xs:   11px;
+  --font-size-sm:   12px;
+  --font-size-base: 14px;
+  --font-size-md:   16px;
+  --font-size-lg:   20px;
+  --font-size-xl:   28px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold:   600;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+
+  /* Transitions */
+  --transition-fast:   all 0.15s ease;
+  --transition-normal: all 0.25s ease;
+}
+
+/* Dark mode overrides — set via data-theme="dark" on <html> */
+[data-theme="dark"] {
+  --color-primary:       #e2e8f0;
+  --color-primary-hover: #f1f5f9;
+  --color-white:         #1e293b;
+  --color-bg:            #0f172a;
+  --color-border:        #334155;
+  --color-border-focus:  #64748b;
+  --color-text-base:     #f1f5f9;
+  --color-text-muted:    #94a3b8;
+  --color-text-subtle:   #64748b;
+  --color-code-bg:       #1e293b;
+  --color-code-text:     #94a3b8;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-base);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Utility classes — use when the same pattern appears in 3+ components */
+.section-heading {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-base);
+}

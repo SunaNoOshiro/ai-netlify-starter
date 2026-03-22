@@ -1,0 +1,26 @@
+.bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono);
+  padding: 4px var(--space-gap);
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  z-index: 9999;
+  /* Default (development) colors */
+  background: #1e3a5f;
+  color: #bfdbfe;
+}
+
+.bar[data-env="production"] { background: #166534; color: #bbf7d0; }
+.bar[data-env="preview"]    { background: #92400e; color: #fef3c7; }
+
+.badge {
+  font-weight: var(--font-weight-bold);
+  padding: 1px var(--space-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid currentColor;
+}

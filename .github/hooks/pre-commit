@@ -2,16 +2,37 @@
 # Pre-commit hook — run by the AI agent (or developer) before every commit.
 # Install once with: npm run setup-hooks
 #
-# Runs the full test suite. Blocks the commit if any test fails.
+# 1. Requires MEMORY.md to be reviewed and dated today.
+# 2. Runs the full test suite. Blocks the commit if any test fails.
 
+TODAY=$(date +%Y-%m-%d)
+
+# ── MEMORY.md review check ─────────────────────────────────────────────────────
+if ! grep -q "Last updated: $TODAY" MEMORY.md 2>/dev/null; then
+  echo ""
+  echo "[pre-commit] ✗ MEMORY.md has not been reviewed today ($TODAY)."
+  echo ""
+  echo "  Before committing, review MEMORY.md and:"
+  echo "    1. Remove or update anything no longer accurate"
+  echo "    2. Add any new architecture decisions, patterns, or gotchas"
+  echo "       introduced by the current changes"
+  echo "    3. Update the Last updated line to: Last updated: $TODAY — <short summary>"
+  echo ""
+  echo "  If this commit makes no changes worth documenting,"
+  echo "  still update the date to confirm you reviewed the file."
+  echo ""
+  exit 1
+fi
+
+# ── Tests ──────────────────────────────────────────────────────────────────────
 echo "[pre-commit] Running tests..."
 npm test
 
 if [ $? -ne 0 ]; then
   echo ""
-  echo "[pre-commit] Tests failed. Commit blocked."
-  echo "Fix the failing tests before committing."
+  echo "[pre-commit] ✗ Tests failed. Commit blocked."
+  echo "  Fix the failing tests before committing."
   exit 1
 fi
 
-echo "[pre-commit] All tests passed."
+echo "[pre-commit] ✓ All checks passed."

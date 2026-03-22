@@ -171,17 +171,23 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            // Fetch all preview deployments then filter by branch name manually,
+            // because the API ref filter matches the stored ref exactly and nwtgck
+            // may store it differently (short name vs refs/heads/...).
             const branch = context.payload.pull_request.head.ref;
 
             const { data: deployments } = await github.rest.repos.listDeployments({
               owner:       context.repo.owner,
               repo:        context.repo.repo,
-              ref:         branch,
               environment: 'preview',
               per_page:    100,
             });
 
-            for (const deployment of deployments) {
+            const toDelete = deployments.filter(d =>
+              d.ref === branch || d.ref === `refs/heads/${branch}`
+            );
+
+            for (const deployment of toDelete) {
               // Must set inactive before deletion is allowed
               await github.rest.repos.createDeploymentStatus({
                 owner:         context.repo.owner,
@@ -195,4 +201,4 @@ jobs:
                 deployment_id: deployment.id,
               });
             }
-            console.log(`Deleted ${deployments.length} preview deployment(s) for branch "${branch}".`);
+            console.log(`Deleted ${toDelete.length} preview deployment(s) for branch "${branch}".`);

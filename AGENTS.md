@@ -24,7 +24,8 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 | Layer | Tech |
 |---|---|
 | Frontend | React 18 + Vite 5 |
-| Styling | CSS Modules + CSS custom properties (`src/styles/global.css`) |
+| Styling | Tailwind CSS v4 + CSS Modules + CSS custom properties (`src/styles/global.css`) |
+| Animations | GSAP + @gsap/react (ScrollTrigger included) |
 | Tests | Vitest + jsdom + @testing-library/react |
 | i18n | Custom context (`src/lib/i18n.jsx`) — EN / PL / UK |
 | Deploy | Netlify via GitHub Actions |
@@ -72,6 +73,8 @@ npm run dev            # http://localhost:5173
 npm test               # run once (required before every commit)
 npm run test:watch     # watch mode
 npm run test:coverage  # coverage → coverage/
+npm run test:bdd       # BDD acceptance tests (Playwright + Gherkin)
+npm run test:bdd:ui    # BDD tests in headed browser (for debugging)
 npm run build          # production build → dist/
 npm run setup-hooks    # install pre-commit hook (once after clone)
 ```
@@ -130,27 +133,75 @@ Follow these steps exactly for every new component:
 
 ## Styling
 
-`src/styles/global.css` is the single source of truth — all values live there as CSS custom properties.
+Three layers work together — apply them in this order of preference:
 
-1. **CSS Modules** for component styles — `ComponentName.module.css` in the component folder.
-   Always use `var(--token-name)` from `global.css`. Never hardcode colors, spacing, or font sizes.
-   ```css
-   /* correct */
-   color: var(--color-text-muted);
-   padding: var(--space-md);
+### Layer 1 — `global.css` (foundation)
 
-   /* wrong */
-   color: #64748b;
-   padding: 16px;
-   ```
+`src/styles/global.css` is the single source of truth for design tokens.
+Structure (order matters):
+```css
+@import "tailwindcss"           /* Tailwind base/utilities/reset — must be first */
+@custom-variant dark (...)      /* wires dark: prefix to data-theme="dark" */
 
-2. **Global utility classes** (defined in `global.css`) for patterns used in 3+ components — e.g. `.section-heading`.
-   Use with `className="section-heading"` (no import needed).
+:root { --color-bg: #f8fafc; }  /* design tokens as CSS custom properties */
+[data-theme="dark"] { ... }     /* dark mode token overrides */
+body { ... }                    /* global element styles */
+.section-heading { ... }        /* shared utility classes (3+ components only) */
+```
 
-3. **Inline styles only for truly dynamic values** — e.g. `style={{ width: progress + '%' }}`.
-   State-driven variants (active/inactive) go in CSS module classes, not inline styles.
+### Layer 2 — CSS Modules (component-scoped)
 
-4. **No CSS frameworks** (no Tailwind, MUI, Bootstrap, styled-components, emotion).
+`ComponentName.module.css` in the component folder. Use for:
+- Component-specific styles that reference `var(--token-name)` tokens
+- State-driven variants (`.active`, `.open`) — never use inline styles for these
+
+Always use `var(--token-name)`. Never hardcode colors, spacing, or font sizes.
+```css
+/* correct */
+color: var(--color-text-muted);
+padding: var(--space-md);
+
+/* wrong */
+color: #64748b;
+padding: 16px;
+```
+
+Use `@apply` to compose Tailwind utilities inside a module when inline classes would be too verbose:
+```css
+.btn {
+  @apply px-4 py-2 rounded-md font-medium transition-colors;
+  background-color: var(--color-primary); /* token for brand color */
+}
+```
+
+### Layer 3 — Tailwind utilities (inline on JSX)
+
+Use directly in `className` for layout, spacing, responsive, and dark variants:
+```jsx
+<div className="flex items-center gap-4 dark:bg-slate-900 md:flex-row">
+```
+
+### Decision rule — which layer to use
+
+| Situation | Use |
+|---|---|
+| Layout, flexbox, grid, padding, margin | Tailwind utility class |
+| Dark mode variants | Tailwind `dark:` prefix |
+| Colors, type sizes, shadows from the token system | `var(--token-name)` in CSS Module |
+| State-driven variants (`.active`, `.open`) | CSS Module class |
+| Pattern repeated in 3+ components | Global utility class in `global.css` |
+| Truly dynamic values (`width: progress + '%'`) | Inline `style={{}}` |
+
+### Other rules
+
+- **Global utility classes** (defined in `global.css`) for patterns used in 3+ components — e.g. `.section-heading`.
+  Use with `className="section-heading"` (no import needed).
+
+- **Inline styles only for truly dynamic values** — e.g. `style={{ width: progress + '%' }}`.
+  State-driven variants (active/inactive) go in CSS module classes, not inline styles.
+
+- **No additional CSS frameworks** (no MUI, Bootstrap, styled-components, emotion).
+  Tailwind CSS v4 utility classes are allowed alongside CSS Modules.
 
 ---
 
@@ -175,6 +226,33 @@ Keys: `camelCase`, feature-scoped — e.g. `contactFormTitle`.
 - Test behaviour, not internals. Use `@testing-library/react`.
 - Never mock project modules. Mock only external I/O (fetch, localStorage).
 - Update `test/setup.js` when adding compile-time constants (`__FOO__`).
+
+### BDD acceptance tests (Playwright + Gherkin)
+
+BDD tests live in `features/`:
+```
+features/
+  *.feature          — Gherkin scenarios (one file per user-facing feature)
+  steps/
+    *.steps.js       — step definitions (shared across features)
+```
+
+**Rule: every UI bug fix must include a BDD scenario before committing.**
+
+When fixing a UI bug:
+1. Write a `.feature` scenario that reproduces the bug (it should fail before your fix).
+2. Apply the fix.
+3. Run `npm run test:bdd` — the scenario must pass.
+4. Only then run `npm test` and commit.
+
+The Gherkin scenario goes in the relevant `features/*.feature` file (or a new one if none fits).
+Step definitions go in `features/steps/` — reuse existing steps where possible, add new ones in a new file named after the feature area.
+
+**Adding a new BDD scenario:**
+1. Write the `Scenario:` block in the `.feature` file in plain English.
+2. Run `npm run test:bdd` — `bddgen` will print missing step definitions.
+3. Implement missing steps in `features/steps/`.
+4. Run `npm run test:bdd` until green.
 
 ---
 
@@ -208,7 +286,7 @@ Examples: `feat: add hero image component` · `fix: block form on preview` · `s
 
 ## Do not
 
-- Hardcode colors, spacing, or font sizes — use `var(--token-name)` from `global.css`.
+- Hardcode colors, spacing, or font sizes — use `var(--token-name)` from `global.css` or Tailwind utilities.
 - Write inline styles for static values — use CSS module classes.
 - Put logic (data fetching, transformations, state) in JSX — extract to a custom hook.
 - Create files with more than one component.

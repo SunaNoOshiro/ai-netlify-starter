@@ -11,6 +11,11 @@ Shared context for all AI agents working on this repo.
 - **Component co-location** — every component lives in its own folder (`ComponentName/`) with `.jsx`, `.module.css`, `.test.jsx`, `index.js`. No exceptions.
 - **Single agent instructions file** — `AGENTS.md` contains all rules. `CLAUDE.md` is a one-line redirect to it.
 - **No AI SDK** — this project is used *by* AI agents as a template, not *with* AI. Do not add AI/LLM packages.
+- **Tailwind CSS v4** — added via `@tailwindcss/vite` plugin. `@import "tailwindcss"` is at the top of `global.css`. Dark mode uses `@custom-variant dark` pointing to `[data-theme="dark"]` to match `ThemeProvider`. Use Tailwind utilities for layout/spacing; CSS Modules for component-specific token-based styles.
+- **GSAP + @gsap/react** — animation library. Always use `useGSAP` (not `useEffect`) for GSAP code; it handles cleanup automatically. Register plugins at module level (`gsap.registerPlugin(...)`). Three animated components serve as reference patterns:
+  - `PageHeader` — entrance timeline (spin-scale logo, blur-fade title, desc stagger) + perpetual float loop
+  - `ImageDemo` — ScrollTrigger card stagger (start: `top 85%`)
+  - `ContactForm` — ScrollTrigger slide-in from right (start: `top 85%`)
 
 ## Theme system
 
@@ -43,4 +48,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — removed BuildInfo component (redundant with BuildBadge); removed buildTitle locale key*
+*Last updated: 2026-03-22 — replaced Framer Motion with GSAP + @gsap/react; animated PageHeader (timeline + float), ImageDemo (ScrollTrigger stagger), ContactForm (ScrollTrigger slide-in)*

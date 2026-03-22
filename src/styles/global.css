@@ -1,3 +1,8 @@
+@import "tailwindcss";
+
+/* Dark mode via data-theme attribute (matches ThemeProvider in src/lib/theme.jsx) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /* Design tokens — single source of truth for all visual values.
    Import once in main.jsx. Use var(--token-name) in all CSS modules. */
 :root {

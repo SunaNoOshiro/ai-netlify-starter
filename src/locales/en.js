@@ -16,6 +16,10 @@ const en = {
   formSend: 'Send',
   formAlert: 'Form submitted! (connect Netlify to see real submissions)',
 
+  // 404 page
+  notFoundMessage: 'Page not found.',
+  notFoundHome:    'Go back home',
+
   // Theme switcher
   themeSwitchToDark:  'Switch to dark mode',
   themeSwitchToLight: 'Switch to light mode',

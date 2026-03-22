@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Netlify sets BRANCH and COMMIT_REF automatically.
+# We map them to VITE_ vars so Vite can embed them at build time.
+[build.environment]
+  VITE_BRANCH     = "$BRANCH"
+  VITE_COMMIT     = "$COMMIT_REF"
+  VITE_BUILD_TIME = "$DEPLOY_TIME"
+
+[context.production.environment]
+  VITE_ENV = "production"
+
+[context.deploy-preview.environment]
+  VITE_ENV = "preview"
+
+[context.branch-deploy.environment]
+  VITE_ENV = "preview"

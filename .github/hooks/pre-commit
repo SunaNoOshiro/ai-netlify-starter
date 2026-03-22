@@ -1,0 +1,17 @@
+#!/bin/sh
+# Pre-commit hook — run by the AI agent (or developer) before every commit.
+# Install once with: npm run setup-hooks
+#
+# Runs the full test suite. Blocks the commit if any test fails.
+
+echo "[pre-commit] Running tests..."
+npm test
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "[pre-commit] Tests failed. Commit blocked."
+  echo "Fix the failing tests before committing."
+  exit 1
+fi
+
+echo "[pre-commit] All tests passed."

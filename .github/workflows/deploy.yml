@@ -1,0 +1,101 @@
+name: CI / Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Tests are intentionally NOT run here.
+# The AI agent (Claude / Codex) is responsible for running `npm test`
+# locally before every commit. See AGENTS.md / CLAUDE.md.
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write   # needed to post PR comments
+      contents: read
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - uses: actions/checkout@v4
+
+      # ── 2. Node ──────────────────────────────────────────────────────────────
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ── 3. Cache node_modules ────────────────────────────────────────────────
+      #   Keyed on package-lock.json → full restore skips `npm ci` entirely.
+      #   On a lock-file change the cache is rebuilt once, then reused.
+      - name: Cache node_modules
+        id: cache-nm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: nm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      # ── 4. Install (only when node_modules cache missed) ─────────────────────
+      - name: Install dependencies
+        if: steps.cache-nm.outputs.cache-hit != 'true'
+        run: npm ci
+
+      # ── 5. Cache Vite build artifacts ────────────────────────────────────────
+      #   Persists Vite's transform/chunk cache across runs.
+      #   Falls back to any previous vite cache on a partial key miss.
+      - name: Cache Vite build
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.vite
+          key: vite-${{ runner.os }}-${{ hashFiles('src/**', 'vite.config.js', 'package-lock.json') }}
+          restore-keys: vite-${{ runner.os }}-
+
+      # ── 6. Inject build metadata ─────────────────────────────────────────────
+      #   These become process.env.VITE_* at build time.
+      #   vite.config.js picks them up via `define` → embedded as compile-time constants.
+      - name: Set build metadata
+        run: |
+          echo "VITE_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"  >> $GITHUB_ENV
+          echo "VITE_COMMIT=${GITHUB_SHA::7}"                         >> $GITHUB_ENV
+          echo "VITE_BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)"      >> $GITHUB_ENV
+          echo "VITE_ENV=$( [ '${{ github.ref }}' = 'refs/heads/main' ] && echo production || echo preview )" >> $GITHUB_ENV
+
+      # ── 7. Build ─────────────────────────────────────────────────────────────
+      - run: npm run build
+
+      # ── 8. Deploy to Netlify ─────────────────────────────────────────────────
+      #   production-deploy=true  → pushes to main site URL
+      #   production-deploy=false → pushes to a unique deploy-preview URL
+      - name: Deploy to Netlify
+        id: netlify
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: ./dist
+          production-deploy: ${{ github.ref == 'refs/heads/main' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "${{ github.event_name == 'pull_request' && format('PR #{0} — {1}', github.event.pull_request.number, github.event.pull_request.title) || format('main @ {0}', github.sha) }}"
+          enable-pull-request-comment: false   # we write our own richer comment below
+          enable-commit-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID:    ${{ secrets.NETLIFY_SITE_ID }}
+
+      # ── 9. Comment preview URL on PR ─────────────────────────────────────────
+      - name: Comment preview URL on PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: netlify-preview
+          message: |
+            ## Netlify Preview Deployed
+
+            | | |
+            |---|---|
+            | **Preview URL** | ${{ steps.netlify.outputs.deploy-url }} |
+            | **Branch** | `${{ env.VITE_BRANCH }}` |
+            | **Commit** | `${{ env.VITE_COMMIT }}` |
+            | **Built at** | `${{ env.VITE_BUILD_TIME }}` |
+
+            > Preview updates automatically on every push to this PR.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

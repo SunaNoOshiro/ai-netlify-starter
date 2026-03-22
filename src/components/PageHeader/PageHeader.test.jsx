@@ -2,8 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import PageHeader from './PageHeader'
 import { I18nProvider } from '../../lib/i18n'
+import { ThemeProvider } from '../../lib/theme'
 
-const wrapper = ({ children }) => <I18nProvider>{children}</I18nProvider>
+const wrapper = ({ children }) => (
+  <ThemeProvider><I18nProvider>{children}</I18nProvider></ThemeProvider>
+)
 
 describe('PageHeader', () => {
   it('renders project name from locale', () => {

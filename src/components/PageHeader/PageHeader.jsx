@@ -1,5 +1,6 @@
 import { useTranslation } from '../../lib/i18n'
 import LanguageSwitcher from '../LanguageSwitcher'
+import ThemeSwitcher from '../ThemeSwitcher'
 import styles from './PageHeader.module.css'
 
 export default function PageHeader() {
@@ -9,6 +10,7 @@ export default function PageHeader() {
     <header className={styles.header}>
       <div className={styles.langRow}>
         <LanguageSwitcher />
+        <ThemeSwitcher />
       </div>
 
       <img src="/logo.svg" alt="logo" width={56} height={56} className={styles.logo} />

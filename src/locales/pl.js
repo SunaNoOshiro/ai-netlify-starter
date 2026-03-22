@@ -18,6 +18,11 @@ const pl = {
 
   // Informacje o buildzie
   buildTitle: 'Informacje o buildzie',
+
+  // Przełącznik motywu
+  themeSwitchToDark:  'Przełącz na tryb ciemny',
+  themeSwitchToLight: 'Przełącz na tryb jasny',
+  themeSwitchToAuto:  'Użyj ustawień systemowych',
 }
 
 export default pl

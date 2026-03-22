@@ -6,3 +6,13 @@ global.__BRANCH__    = 'test-branch'
 global.__COMMIT__    = 'abc1234'
 global.__BUILD_TIME__ = '2024-01-01T00:00:00Z'
 global.__ENV__       = 'test'
+
+// jsdom does not implement matchMedia — stub it out.
+window.matchMedia = window.matchMedia || function (query) {
+  return {
+    matches: false,
+    media: query,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  }
+}

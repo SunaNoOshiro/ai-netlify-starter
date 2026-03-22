@@ -55,7 +55,28 @@
   --transition-normal: all 0.25s ease;
 }
 
+/* Dark mode overrides — set via data-theme="dark" on <html> */
+[data-theme="dark"] {
+  --color-primary:       #e2e8f0;
+  --color-primary-hover: #f1f5f9;
+  --color-white:         #1e293b;
+  --color-bg:            #0f172a;
+  --color-border:        #334155;
+  --color-border-focus:  #64748b;
+  --color-text-base:     #f1f5f9;
+  --color-text-muted:    #94a3b8;
+  --color-text-subtle:   #64748b;
+  --color-code-bg:       #1e293b;
+  --color-code-text:     #94a3b8;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-base);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
 
 /* Utility classes — use when the same pattern appears in 3+ components */
 .section-heading {

@@ -18,6 +18,11 @@ const en = {
 
   // Build info
   buildTitle: 'Build info',
+
+  // Theme switcher
+  themeSwitchToDark:  'Switch to dark mode',
+  themeSwitchToLight: 'Switch to light mode',
+  themeSwitchToAuto:  'Switch to system mode',
 }
 
 export default en

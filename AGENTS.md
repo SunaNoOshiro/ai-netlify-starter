@@ -3,6 +3,8 @@
 Rules for all AI coding agents — Claude Code, OpenAI Codex (web + CLI), and others.
 To override locally without editing this file: create `AGENTS.override.md` or `CLAUDE.override.md` (both gitignored).
 
+> **Start every session by reading [`MEMORY.md`](./MEMORY.md).** It records architecture decisions, known gotchas, and context that is not obvious from the code. Update it whenever you make a significant decision or discover something worth preserving.
+
 ---
 
 ## Project overview
@@ -81,7 +83,12 @@ npm run setup-hooks    # install pre-commit hook (once after clone)
 1. Make your code changes
 2. Run `npm test` — fix any failures before proceeding
 3. If you changed `vite.config.js`, `main.jsx`, or any `src/styles/` file, also run `npm run build` to catch build errors
-4. Commit only when all tests pass
+4. Review `MEMORY.md` before every commit — the pre-commit hook blocks if `Last updated` is not today's date:
+   - Remove or update anything that is no longer accurate
+   - Add new architecture decisions, patterns, providers, or gotchas introduced by the current changes
+   - Update the last line to: `Last updated: YYYY-MM-DD — <short summary of what changed>`
+   - If this commit changes nothing worth documenting, still update the date to confirm you reviewed
+5. Commit only when all tests pass
 
 CI does **not** run tests. You are the gate. Never commit if tests fail.
 

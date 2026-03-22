@@ -18,6 +18,11 @@ const uk = {
 
   // Інформація про білд
   buildTitle: 'Інформація про білд',
+
+  // Перемикач теми
+  themeSwitchToDark:  'Перейти до темного режиму',
+  themeSwitchToLight: 'Перейти до світлого режиму',
+  themeSwitchToAuto:  'Використовувати системні налаштування',
 }
 
 export default uk

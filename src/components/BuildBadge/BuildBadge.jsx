@@ -6,6 +6,13 @@ const ENV_LABELS = { production: 'PROD', preview: 'PREVIEW', development: 'DEV' 
 export default function BuildBadge() {
   const label = ENV_LABELS[version.env] ?? 'DEV'
 
+  if (version.env === 'production') {
+    console.info(
+      `[build] ${label} | branch: ${version.branch} | commit: ${version.commit} | built: ${version.buildTime}`
+    )
+    return null
+  }
+
   return (
     <div className={styles.bar} data-env={version.env}>
       <span className={styles.badge}>{label}</span>

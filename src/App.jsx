@@ -8,8 +8,6 @@ import ContactForm       from './components/ContactForm'
 import NotFound          from './components/NotFound'
 import AboutPage         from './components/AboutPage'
 
-console.log('[build]', version)
-
 function Home() {
   return (
     <div className={styles.wrapper}>

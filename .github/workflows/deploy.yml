@@ -59,12 +59,15 @@ jobs:
       # ── 6. Inject build metadata ─────────────────────────────────────────────
       #   These become process.env.VITE_* at build time.
       #   vite.config.js picks them up via `define` → embedded as compile-time constants.
+      #   VITE_APP_URL is used by vite.plugins.js for sitemap.xml and robots.txt.
+      #   Set vars.PRODUCTION_URL in repo Settings → Variables → Actions.
       - name: Set build metadata
         run: |
           echo "VITE_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"  >> $GITHUB_ENV
           echo "VITE_COMMIT=${GITHUB_SHA::7}"                         >> $GITHUB_ENV
           echo "VITE_BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)"      >> $GITHUB_ENV
           echo "VITE_ENV=$( [ '${{ github.ref }}' = 'refs/heads/main' ] && echo production || echo preview )" >> $GITHUB_ENV
+          [ -n "${{ vars.PRODUCTION_URL }}" ] && echo "VITE_APP_URL=${{ vars.PRODUCTION_URL }}" >> $GITHUB_ENV || true
 
       # ── 7. Build ─────────────────────────────────────────────────────────────
       - run: npm run build

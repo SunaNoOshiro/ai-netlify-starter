@@ -17,14 +17,19 @@ function getRoutesFromApp() {
   return parseRoutePaths(src)
 }
 
-// Hostname resolution (in priority order):
-//   1. VITE_APP_URL — set by the user for their production domain
-//   2. URL          — Netlify's built-in site URL env var (production URL on all deploys)
-//   3. fallback     — placeholder so the build never fails
-export const hostname =
-  process.env.VITE_APP_URL ||
-  process.env.URL ||
-  'https://example.com'
+// Hostname for sitemap.xml and robots.txt.
+// Source: VITE_APP_URL repo variable → injected by deploy.yml as an env var.
+// Set it in GitHub → Settings → Variables → Actions → PRODUCTION_URL.
+// Falls back to a placeholder so the build never fails — but sitemap/robots
+// will contain example.com until the variable is set.
+export const hostname = process.env.VITE_APP_URL || 'https://example.com'
+
+if (process.env.VITE_ENV === 'production' && !process.env.VITE_APP_URL) {
+  console.warn(
+    '[vite-plugins] VITE_APP_URL is not set — sitemap and robots.txt will use "https://example.com".\n' +
+    '               Add PRODUCTION_URL to GitHub → Settings → Variables → Actions.'
+  )
+}
 
 // true only when building the production deploy
 const isProduction = process.env.VITE_ENV === 'production'

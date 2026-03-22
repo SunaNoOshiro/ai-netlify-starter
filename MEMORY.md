@@ -54,7 +54,7 @@ Shared context for all AI agents working on this repo.
 - Plugin logic lives in `vite.plugins.js`; the core parser `parseRoutePaths(src)` is a pure function tested in `test/vite-plugins.test.js`
 - Routes are parsed from `<Route path="...">` in `src/App.jsx` automatically — no manual list to maintain; supports multi-line Route declarations
 - Build output verified by `test/build.integration.test.js` (runs production + preview builds, checks `dist/` files)
-- Hostname priority: `VITE_APP_URL` → `URL` (Netlify's built-in) → `https://example.com`
+- Hostname source: `VITE_APP_URL` env var, injected by `deploy.yml` from `vars.PRODUCTION_URL` (GitHub repo variable). Falls back to `https://example.com` — sitemap/robots will be wrong until `PRODUCTION_URL` is set. **Netlify's `URL` env var is NOT available** — the build runs in GitHub Actions, not on Netlify.
 - **Production only**: `sitemap.xml` generated + `robots.txt` with `Allow: /`
 - **Preview / dev**: no `sitemap.xml`; `robots.txt` blocks all crawlers (`Disallow: /`)
 
@@ -120,4 +120,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-23 — useFetch hook (loading/error/abort pattern); AGENTS.md data fetching section added*
+*Last updated: 2026-03-23 — fix sitemap/robots hostname: inject VITE_APP_URL from vars.PRODUCTION_URL in deploy.yml*

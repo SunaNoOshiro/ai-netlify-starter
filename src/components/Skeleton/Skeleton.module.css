@@ -1,0 +1,54 @@
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton-base)  25%,
+    var(--color-skeleton-shine) 50%,
+    var(--color-skeleton-base)  75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
+/* Variants */
+.text {
+  width: 100%;
+  height: 1em;
+}
+
+.heading {
+  width: 60%;
+  height: 1.5em;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-lg);
+}
+
+.card {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-lg);
+}
+
+/* Multiple lines */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

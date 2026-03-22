@@ -57,6 +57,14 @@ Shared context for all AI agents working on this repo.
 - **Production only**: `sitemap.xml` generated + `robots.txt` with `Allow: /`
 - **Preview / dev**: no `sitemap.xml`; `robots.txt` blocks all crawlers (`Disallow: /`)
 
+## Skeleton loader
+
+- `src/components/Skeleton/` — no provider needed, import directly
+- Props: `variant` (`text`|`heading`|`avatar`|`image`|`card`), `lines`, `width`, `height`
+- `lines > 1` renders a stack; last line is always 70% wide for realism
+- Shimmer uses `--color-skeleton-base` / `--color-skeleton-shine` tokens (light + dark mode)
+- Always sets `aria-hidden="true"` — invisible to screen readers
+
 ## Cookie consent (GDPR)
 
 - `CookieConsentProvider` + `useCookieConsent` in `src/lib/cookieConsent.jsx`; mounted in `main.jsx`
@@ -97,4 +105,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-23 — cookie consent banner (GDPR, disabled by default, VITE_COOKIE_CONSENT=true to enable)*
+*Last updated: 2026-03-23 — Skeleton loader component (shimmer, 5 variants, lines prop, dark mode tokens)*

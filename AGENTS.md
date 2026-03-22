@@ -54,6 +54,7 @@ src/
     SEO/                — per-page <title> + <meta description> via react-helmet-async
     Toast/              — toast notification UI; logic in src/lib/toast.jsx
     CookieBanner/       — GDPR consent banner; logic in src/lib/cookieConsent.jsx
+    Skeleton/           — shimmer loading placeholder for async data
     AboutPage/          — example second page (copy this pattern when adding pages)
     PageHeader/         — home page hero section (GSAP animations)
     MyComponent/
@@ -341,6 +342,33 @@ export default function Analytics() {
   // load analytics only after explicit acceptance
 }
 ```
+
+---
+
+## Skeleton loader
+
+Use `<Skeleton>` while async data is fetching to prevent blank UI:
+
+```jsx
+import Skeleton from '../Skeleton'
+
+// Single elements
+<Skeleton />                          // full-width text line (default)
+<Skeleton variant="heading" />        // 60% wide, thicker
+<Skeleton variant="avatar" />         // 40×40 circle
+<Skeleton variant="image" />          // full-width 200px block
+<Skeleton variant="card" />           // full-width 120px block
+
+// Multiple text lines (last line is 70% wide)
+<Skeleton lines={3} />
+
+// Custom size
+<Skeleton width="120px" height="80px" />
+```
+
+No provider, no context — import and use directly. `aria-hidden="true"` is set automatically.
+
+---
 
 - `CookieConsentProvider` is already mounted in `main.jsx`
 - `consent`: `'accepted'` | `'declined'` | `null` (null = not yet decided)

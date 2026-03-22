@@ -18,6 +18,13 @@ jobs:
     permissions:
       pull-requests: write   # needed to post PR comments
       contents: read
+      deployments: write     # needed to create GitHub deployment records
+
+    # Registers a GitHub Environment — shows up in repo sidebar with live URL.
+    # production → main site URL; preview → ephemeral deploy URL.
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+      url: ${{ steps.netlify.outputs.deploy-url }}
 
     steps:
       # ── 1. Checkout ──────────────────────────────────────────────────────────

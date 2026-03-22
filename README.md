@@ -2,6 +2,10 @@
 
 Production-ready Vite + React starter with automated CI/CD on GitHub + Netlify (free tier).
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2a37781c-5a89-4301-b9fc-53601a4e810b/deploy-status)](https://ai-netlify-starter.netlify.app)
+
+**Production:** https://ai-netlify-starter.netlify.app
+
 ---
 
 ## Architecture

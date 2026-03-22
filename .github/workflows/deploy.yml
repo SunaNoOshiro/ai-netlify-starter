@@ -114,26 +114,19 @@ jobs:
               marker,
               '## 🚀 Preview ready',
               '',
-              `🔍 Preview: ${deployUrl}`,
+              '| | |',
+              '|---|---|',
+              `| 🔍 **Preview** | [${deployUrl}](${deployUrl}) |`,
             ];
 
             if (prodUrl) {
-              lines.push(`🌍 Production: ${prodUrl}`);
-            }
-
-            lines.push('', '👉 Compare:', `- [Open Preview](${deployUrl})`);
-
-            if (prodUrl) {
-              lines.push(`- [Open Production](${prodUrl})`);
+              lines.push(`| 🌍 **Production** | [${prodUrl}](${prodUrl}) |`);
             }
 
             lines.push(
-              '',
-              '| | |',
-              '|---|---|',
-              `| **Branch** | \`${branch}\` |`,
-              `| **Commit** | \`${commit}\` |`,
-              `| **Built at** | \`${buildTime}\` |`,
+              `| 🌿 **Branch** | \`${branch}\` |`,
+              `| 📝 **Commit** | \`${commit}\` |`,
+              `| 🕐 **Built at** | \`${buildTime}\` |`,
               '',
               '> Preview updates automatically on every push to this PR.',
             );

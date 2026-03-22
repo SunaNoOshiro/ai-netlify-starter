@@ -57,6 +57,14 @@ Shared context for all AI agents working on this repo.
 - **Production only**: `sitemap.xml` generated + `robots.txt` with `Allow: /`
 - **Preview / dev**: no `sitemap.xml`; `robots.txt` blocks all crawlers (`Disallow: /`)
 
+## Cookie consent (GDPR)
+
+- `CookieConsentProvider` + `useCookieConsent` in `src/lib/cookieConsent.jsx`; mounted in `main.jsx`
+- **Disabled by default** — set `VITE_COOKIE_CONSENT=true` to show the banner (`config.cookieConsentEnabled`)
+- `consent`: `'accepted'` | `'declined'` | `null`; persisted to `localStorage` key `cookie-consent`
+- `hasConsented`: `true` only when explicitly accepted — gate all analytics/tracking behind this
+- Tests must `vi.mock('../../config', () => ({ config: { cookieConsentEnabled: true } }))` to show the banner
+
 ## Toast notifications
 
 - `ToastProvider` + `useToast` in `src/lib/toast.jsx`; visual component in `src/components/Toast/`
@@ -89,4 +97,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — Toast system; SEO complete (html[lang], og:image, sitemap+robots env-aware); README, AGENTS.md, MEMORY.md all updated*
+*Last updated: 2026-03-23 — cookie consent banner (GDPR, disabled by default, VITE_COOKIE_CONSENT=true to enable)*

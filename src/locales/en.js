@@ -45,6 +45,12 @@ const en = {
 
   // Toast notifications
   toastDismiss: 'Dismiss notification',
+
+  // Cookie consent banner
+  cookieBannerLabel:   'Cookie consent',
+  cookieBannerMessage: 'We use cookies to improve your experience. You can accept or decline non-essential cookies.',
+  cookieBannerAccept:  'Accept',
+  cookieBannerDecline: 'Decline',
 }
 
 export default en

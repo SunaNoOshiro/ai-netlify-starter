@@ -8,6 +8,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import { I18nProvider } from './lib/i18n'
 import { ThemeProvider } from './lib/theme'
 import { ToastProvider } from './lib/toast'
+import { CookieConsentProvider } from './lib/cookieConsent'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <ThemeProvider>
             <I18nProvider>
               <ToastProvider>
-                <App />
+                <CookieConsentProvider>
+                  <App />
+                </CookieConsentProvider>
               </ToastProvider>
             </I18nProvider>
           </ThemeProvider>

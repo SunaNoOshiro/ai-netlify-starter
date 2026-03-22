@@ -18,6 +18,7 @@ A ready-made website template. Fork it, connect it to two free services, and you
 - **Placeholder images** — broken images show a clean fallback instead of a broken icon
 - **SEO ready** — per-page titles and descriptions, `sitemap.xml` and `robots.txt` generated automatically at build time; search engines are blocked from preview deploys
 - **Toast notifications** — `toast.success()` / `toast.error()` available everywhere, no setup needed
+- **Cookie consent banner** — GDPR-ready placeholder, off by default; enable with one environment variable when you add analytics
 
 ---
 

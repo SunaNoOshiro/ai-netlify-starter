@@ -45,6 +45,12 @@ const pl = {
 
   // Powiadomienia toast
   toastDismiss: 'Zamknij powiadomienie',
+
+  // Baner zgody na pliki cookie
+  cookieBannerLabel:   'Zgoda na pliki cookie',
+  cookieBannerMessage: 'Używamy plików cookie, aby poprawić Twoje doświadczenia. Możesz zaakceptować lub odrzucić nieistotne pliki cookie.',
+  cookieBannerAccept:  'Akceptuj',
+  cookieBannerDecline: 'Odrzuć',
 }
 
 export default pl

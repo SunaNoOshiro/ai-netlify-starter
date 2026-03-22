@@ -18,6 +18,7 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 - **Build metadata** — branch, commit, env, build time visible in the UI footer
 - **SEO** — per-page `<title>` + `<meta description>`; `sitemap.xml` + `robots.txt` auto-generated at build time (production only; previews are blocked from crawlers)
 - **Toast notifications** — `useToast()` hook, available app-wide via `ToastProvider` in `main.jsx`
+- **Cookie consent** — GDPR banner, disabled by default; enable with `VITE_COOKIE_CONSENT=true`
 
 ---
 
@@ -52,6 +53,7 @@ src/
     ErrorBoundary/      — catches React crashes; shows debug info in non-production only
     SEO/                — per-page <title> + <meta description> via react-helmet-async
     Toast/              — toast notification UI; logic in src/lib/toast.jsx
+    CookieBanner/       — GDPR consent banner; logic in src/lib/cookieConsent.jsx
     AboutPage/          — example second page (copy this pattern when adding pages)
     PageHeader/         — home page hero section (GSAP animations)
     MyComponent/
@@ -107,6 +109,7 @@ All `VITE_*` variables are embedded into the browser bundle at build time. See `
 |---|---|---|
 | `VITE_APP_NAME` | no | Display name used in Nav, page title, footer. Default: `AI Starter` |
 | `VITE_APP_URL` | no | Production domain (e.g. `https://example.com`). Used for `og:image` and `sitemap.xml`. Netlify's `URL` env var is used as an automatic fallback — only set this if you have a custom domain |
+| `VITE_COOKIE_CONSENT` | no | Set to `true` to show the GDPR cookie consent banner. Default: `false` (hidden) |
 | `VITE_ENV` | CI only | One of `development` \| `preview` \| `production`. Injected by GitHub Actions |
 | `VITE_BRANCH`, `VITE_COMMIT`, `VITE_BUILD_TIME` | CI only | Injected by GitHub Actions for the build badge |
 
@@ -320,6 +323,30 @@ Pass a custom duration (ms) as a second argument: `toast.success('Done', { durat
 - `ToastProvider` is already mounted in `main.jsx` — no setup needed in individual components
 - Toast messages are plain strings passed by the caller — localise them at the call site with `t.keyName`
 - Tests that use `useToast()` must wrap with `<ToastProvider>` (inside `<I18nProvider>`)
+
+---
+
+## Cookie consent (GDPR)
+
+The banner is **disabled by default**. To enable it, set `VITE_COOKIE_CONSENT=true` in your environment.
+
+Gate analytics or tracking scripts behind the consent check:
+
+```jsx
+import { useCookieConsent } from '../lib/cookieConsent'
+
+export default function Analytics() {
+  const { hasConsented } = useCookieConsent()
+  if (!hasConsented) return null
+  // load analytics only after explicit acceptance
+}
+```
+
+- `CookieConsentProvider` is already mounted in `main.jsx`
+- `consent`: `'accepted'` | `'declined'` | `null` (null = not yet decided)
+- `hasConsented`: `true` only when explicitly accepted — use this as the gate
+- Choice is persisted to `localStorage` key `cookie-consent`
+- Tests must mock `../../config` to set `cookieConsentEnabled: true`
 
 ---
 

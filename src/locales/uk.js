@@ -45,6 +45,12 @@ const uk = {
 
   // Сповіщення toast
   toastDismiss: 'Закрити сповіщення',
+
+  // Банер згоди на cookie
+  cookieBannerLabel:   'Згода на cookie',
+  cookieBannerMessage: 'Ми використовуємо файли cookie для покращення вашого досвіду. Ви можете прийняти або відхилити необов\'язкові файли cookie.',
+  cookieBannerAccept:  'Прийняти',
+  cookieBannerDecline: 'Відхилити',
 }
 
 export default uk

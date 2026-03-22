@@ -8,6 +8,7 @@ export default function AboutPage() {
     <div className={styles.wrapper}>
       <SEO title={t.aboutTitle} description={t.aboutMetaDesc} />
       <h1 className="section-heading">{t.aboutTitle}</h1>
+      <p className={styles.lead}>{t.aboutLead}</p>
       <p className={styles.body}>{t.aboutBody}</p>
     </div>
   )

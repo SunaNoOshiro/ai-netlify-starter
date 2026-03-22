@@ -12,12 +12,12 @@ const IMAGES = [
   {
     src:      '/images/your-photo.jpg',
     fallback: '/images/placeholders/placeholder-card.svg',
-    labelKey: 'imageLabelFallback',
+    labelKey: 'homeImageLabelFallback',
   },
   {
     src:      '/images/placeholders/placeholder-card.svg',
     fallback: '/images/placeholders/placeholder-card.svg',
-    labelKey: 'imageLabelCard',
+    labelKey: 'homeImageLabelCard',
   },
 ]
 
@@ -42,7 +42,7 @@ export default function ImageDemo() {
 
   return (
     <section ref={sectionRef} className={styles.section}>
-      <h3 className="section-heading">{t.imagesTitle}</h3>
+      <h3 className="section-heading">{t.homeImagesTitle}</h3>
       <div className={styles.grid}>
         {IMAGES.map(({ src, fallback, labelKey }) => (
           <ImageCard

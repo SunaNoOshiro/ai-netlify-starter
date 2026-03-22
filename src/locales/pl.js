@@ -1,55 +1,62 @@
+// Patrz en.js — konwencja nazewnictwa kluczy i instrukcje.
+
 const pl = {
-  // Strona
+  // ── Shared / global ───────────────────────────────────────────────────────
   projectName: 'Nazwa projektu',
-  projectDesc: 'Zastąp tę stronę własną treścią.\nCI/CD, podgląd wdrożeń i Netlify Forms są już skonfigurowane.',
 
-  // Sekcja obrazów
-  imagesTitle: 'Obrazy zastępcze',
-  imageLabelFallback: 'Prawdziwy obraz (brakujący → zastępczy)',
-  imageLabelCard: 'Obraz zastępczy karty (400×300)',
+  // ── Strona główna ─────────────────────────────────────────────────────────
+  homeHeroTitle:    'Nazwa projektu',
+  homeHeroSubtitle: 'Zastąp tę stronę własną treścią.\nCI/CD, podgląd wdrożeń i Netlify Forms są już skonfigurowane.',
 
-  // Formularz kontaktowy
-  formTitle: 'Formularz kontaktowy (Netlify Forms)',
-  formName: 'Imię',
-  formEmail: 'E-mail',
-  formMessage: 'Wiadomość',
-  formSend: 'Wyślij',
-  formAlert: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
-
-  // SEO — strona główna
+  // Strona główna — SEO
   homeMetaTitle: 'Strona główna',
   homeMetaDesc:  'Zastąp ten opis własnym — ten tekst pojawia się w wynikach wyszukiwania Google.',
 
-  // SEO — strona O nas
+  // Strona główna — sekcja obrazów
+  homeImagesTitle:        'Obrazy zastępcze',
+  homeImageLabelFallback: 'Prawdziwy obraz (brakujący → zastępczy)',
+  homeImageLabelCard:     'Obraz zastępczy karty (400×300)',
+
+  // Strona główna — formularz kontaktowy
+  homeFormTitle:   'Formularz kontaktowy (Netlify Forms)',
+  homeFormName:    'Imię',
+  homeFormEmail:   'E-mail',
+  homeFormMessage: 'Wiadomość',
+  homeFormSend:    'Wyślij',
+  homeFormSuccess: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
+
+  // ── Strona O nas ──────────────────────────────────────────────────────────
+  aboutTitle: 'O nas',
+  aboutLead:  'Krótkie podsumowanie projektu. Zastąp własnym tagline\'em.',
+  aboutBody:  'Zastąp tę stronę własną treścią. Opisz swój projekt, zespół lub historię.',
+
+  // Strona O nas — SEO
   aboutMetaDesc: 'Dowiedz się więcej o tym projekcie.',
 
-  // Nawigacja
+  // ── Nawigacja ─────────────────────────────────────────────────────────────
   navHome:  'Strona główna',
   navAbout: 'O nas',
 
-  // Strona O nas
-  aboutTitle: 'O nas',
-  aboutBody:  'Zastąp tę stronę własną treścią.',
-
-  // Stopka
+  // ── Stopka ────────────────────────────────────────────────────────────────
   footerCopyright: '© {year} Nazwa projektu',
 
-  // Strona 404
-  notFoundMessage: 'Strona nie została znaleziona.',
+  // ── Strona 404 ────────────────────────────────────────────────────────────
+  notFoundTitle:   'Strona nie została znaleziona',
+  notFoundMessage: 'Strona, której szukasz, nie istnieje.',
   notFoundHome:    'Wróć na stronę główną',
 
-  // Przełącznik motywu
+  // ── Przełącznik motywu ────────────────────────────────────────────────────
   themeSwitchToDark:  'Przełącz na tryb ciemny',
   themeSwitchToLight: 'Przełącz na tryb jasny',
   themeSwitchToAuto:  'Użyj ustawień systemowych',
 
-  // Modal
+  // ── Modal ─────────────────────────────────────────────────────────────────
   modalClose: 'Zamknij',
 
-  // Powiadomienia toast
+  // ── Powiadomienia toast ───────────────────────────────────────────────────
   toastDismiss: 'Zamknij powiadomienie',
 
-  // Baner zgody na pliki cookie
+  // ── Baner zgody na pliki cookie ───────────────────────────────────────────
   cookieBannerLabel:   'Zgoda na pliki cookie',
   cookieBannerMessage: 'Używamy plików cookie, aby poprawić Twoje doświadczenia. Możesz zaakceptować lub odrzucić nieistotne pliki cookie.',
   cookieBannerAccept:  'Akceptuj',

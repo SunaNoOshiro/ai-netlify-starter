@@ -30,6 +30,7 @@ Shared context for all AI agents working on this repo.
 - Three locales: `en.js`, `pl.js`, `uk.js` in `src/locales/`
 - Every user-visible string (including `aria-label`, `placeholder`, `title`) must use `useTranslation()` → `t.keyName`
 - When adding a key: add to **all three** locale files at once. Never one without the others.
+- **Key naming convention:** `<pageName><Section><Descriptor>` camelCase — e.g. `homeHeroTitle`, `homeFormName`, `pricingPlanBasicLabel`. Never generic names like `title` or `label`.
 - Provider: `src/lib/i18n.jsx` — `I18nProvider` + `useTranslation`
 
 ## CI/CD
@@ -112,4 +113,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-23 — Modal component (native dialog, Escape/backdrop/✕ close, scroll lock, fade animation)*
+*Last updated: 2026-03-23 — scoped locale key naming convention (homeHeroTitle, etc.); AboutPage expanded with aboutLead; ContactForm + ImageDemo updated to new keys; AGENTS.md "Adding a new page" checklist rewritten*

@@ -57,9 +57,9 @@ export default function PageHeader() {
         className={styles.logo}
       />
 
-      <h1 className={styles.title}>{t.projectName}</h1>
+      <h1 className={styles.title}>{t.homeHeroTitle}</h1>
       <p className={styles.desc}>
-        {t.projectDesc.split('\n').map((line, i) => (
+        {t.homeHeroSubtitle.split('\n').map((line, i) => (
           <span key={i}>{line}{i === 0 && <br />}</span>
         ))}
       </p>

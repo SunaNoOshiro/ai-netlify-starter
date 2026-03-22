@@ -152,22 +152,46 @@ Follow these steps exactly for every new component:
 
 ## Adding a new page
 
-Follow these steps exactly every time you add a page:
+Follow these steps exactly every time you add a page. The `AboutPage` component is the canonical example — read it before starting.
 
-1. Create the page component: `src/components/AboutPage/AboutPage.jsx` (and `.module.css`, `.test.jsx`, `index.js`)
-2. Add a `<Route>` in `App.jsx`:
+1. **Create the component folder:** `src/components/PricingPage/`
+   - `PricingPage.jsx` — default export, one responsibility, max ~80 lines
+   - `PricingPage.module.css` — scoped styles, `var(--token-name)` only
+   - `PricingPage.test.jsx` — at minimum: renders without crashing, shows page title
+   - `index.js` — `export { default } from './PricingPage'`
+
+2. **Add SEO** — include the `SEO` component at the top of the JSX:
    ```jsx
-   <Route path="/about" element={<AboutPage />} />
+   import SEO from '../SEO'
+   <SEO title={t.pricingMetaTitle} description={t.pricingMetaDesc} />
    ```
-3. Add a `<NavLink>` in `Nav.jsx`:
+
+3. **Register the route** in `App.jsx`:
    ```jsx
-   <li><NavLink to="/about">{t.navAbout}</NavLink></li>
+   import PricingPage from './components/PricingPage'
+   <Route path="/pricing" element={<PricingPage />} />
    ```
-4. Add the nav label to **all three** locale files: `navAbout` in `en.js`, `pl.js`, `uk.js`
-5. Add any other page-specific strings to all three locale files
-6. Run `npm test` — fix any failures before committing
+
+4. **Add a nav link** in `Nav.jsx`:
+   ```jsx
+   <li><NavLink to="/pricing">{t.navPricing}</NavLink></li>
+   ```
+
+5. **Add locale keys** to **all three** files (`en.js`, `pl.js`, `uk.js`) at the same time.
+   Follow the naming convention — keys scoped to the page: `pricing<Section><Descriptor>`:
+   ```js
+   // en.js
+   pricingMetaTitle: 'Pricing',
+   pricingMetaDesc:  'See our plans and pricing.',
+   navPricing:       'Pricing',
+   pricingHeroTitle: 'Simple, transparent pricing',
+   // same keys in pl.js and uk.js with translated values
+   ```
+
+6. **Run `npm test`** — fix any failures before committing.
 
 No changes needed to `_redirects`, `BrowserRouter`, or `Layout` — they handle all routes automatically.
+The sitemap auto-updates: `vite.plugins.js` reads `<Route path="...">` entries from `App.jsx` at build time.
 
 ---
 
@@ -289,11 +313,27 @@ Every user-visible string must go through i18n:
 
 ```js
 const { t } = useTranslation()
-<h1>{t.pageTitle}</h1>   // not: <h1>My Title</h1>
+<h1>{t.homeHeroTitle}</h1>   // not: <h1>My Title</h1>
 ```
 
 Add new keys to **all three** locale files at once: `en.js`, `pl.js`, `uk.js`. Never one without the others.
-Keys: `camelCase`, feature-scoped — e.g. `contactFormTitle`.
+
+**Key naming convention:** `<pageName><Section><Descriptor>` — always camelCase, always scoped.
+
+```js
+// Correct — unambiguous even in a large file
+homeHeroTitle
+homeFormName
+pricingHeroTitle
+pricingPlanBasicLabel
+
+// Wrong — too generic, collides as the app grows
+title
+formName
+label
+```
+
+The `AboutPage` (two localisable strings: `aboutLead`, `aboutBody`) is the minimal working example — read `src/locales/en.js` for the full key inventory.
 
 ---
 

@@ -35,7 +35,9 @@ Shared context for all AI agents working on this repo.
 ## CI/CD
 
 - Tests run **only** via pre-commit hook — CI does not run tests
-- Preview deploy on every PR with sticky URL comment
+- Preview deploy on every PR; PR comment posts the deploy-id-based Netlify URL (e.g. `https://abc123--site.netlify.app`) via `actions/github-script`
+- Comment uses a hidden `<!-- netlify-preview -->` HTML marker to find and update the existing bot comment instead of posting a new one each push
+- Production URL comes from the repository variable `vars.PRODUCTION_URL` (Settings → Variables → Actions)
 - Production deploy on merge to `main`
 - Build metadata injected at compile time: `__BRANCH__`, `__COMMIT__`, `__BUILD_TIME__`, `__ENV__`
 
@@ -48,4 +50,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — replaced Framer Motion with GSAP + @gsap/react; animated PageHeader (timeline + float), ImageDemo (ScrollTrigger stagger), ContactForm (ScrollTrigger slide-in)*
+*Last updated: 2026-03-22 — improved PR comment step: switched to actions/github-script, deploy-id URL, update-or-create via HTML marker, production URL from vars.PRODUCTION_URL*

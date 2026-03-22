@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, closed]
 
 # Tests are intentionally NOT run here.
 # The AI agent (Claude / Codex) is responsible for running `npm test`
@@ -14,17 +15,12 @@ env:
 
 jobs:
   build-deploy:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write   # needed to post PR comments
       contents: read
       deployments: write     # needed to create GitHub deployment records
-
-    # Registers a GitHub Environment — shows up in repo sidebar with live URL.
-    # production → main site URL; preview → ephemeral deploy URL.
-    environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
-      url: ${{ steps.netlify.outputs.deploy-url }}
 
     steps:
       # ── 1. Checkout ──────────────────────────────────────────────────────────
@@ -86,26 +82,124 @@ jobs:
           deploy-message: "${{ github.event_name == 'pull_request' && format('PR #{0} — {1}', github.event.pull_request.number, github.event.pull_request.title) || format('main @ {0}', github.sha) }}"
           enable-pull-request-comment: false   # we write our own richer comment below
           enable-commit-comment: false
+          github-deployment-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID:    ${{ secrets.NETLIFY_SITE_ID }}
 
       # ── 9. Comment preview URL on PR ─────────────────────────────────────────
+      #   Uses a hidden HTML marker to find an existing bot comment and update
+      #   it in-place, preventing comment spam on repeated pushes to the same PR.
       - name: Comment preview URL on PR
         if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: netlify-preview
-          message: |
-            ## Netlify Preview Deployed
-
-            | | |
-            |---|---|
-            | **Preview URL** | ${{ steps.netlify.outputs.deploy-url }} |
-            | **Branch** | `${{ env.VITE_BRANCH }}` |
-            | **Commit** | `${{ env.VITE_COMMIT }}` |
-            | **Built at** | `${{ env.VITE_BUILD_TIME }}` |
-
-            > Preview updates automatically on every push to this PR.
+        uses: actions/github-script@v7
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_URL:      ${{ steps.netlify.outputs.deploy-url }}
+          PROD_URL:        ${{ vars.PRODUCTION_URL }}
+          VITE_BRANCH:     ${{ env.VITE_BRANCH }}
+          VITE_COMMIT:     ${{ env.VITE_COMMIT }}
+          VITE_BUILD_TIME: ${{ env.VITE_BUILD_TIME }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker     = '<!-- netlify-preview -->';
+            const deployUrl  = process.env.DEPLOY_URL;
+            const prodUrl    = process.env.PROD_URL;
+
+            const branch    = process.env.VITE_BRANCH;
+            const commit    = process.env.VITE_COMMIT;
+            const buildTime = process.env.VITE_BUILD_TIME;
+
+            const lines = [
+              marker,
+              '## 🚀 Preview ready',
+              '',
+              `🔍 Preview: ${deployUrl}`,
+            ];
+
+            if (prodUrl) {
+              lines.push(`🌍 Production: ${prodUrl}`);
+            }
+
+            lines.push('', '👉 Compare:', `- [Open Preview](${deployUrl})`);
+
+            if (prodUrl) {
+              lines.push(`- [Open Production](${prodUrl})`);
+            }
+
+            lines.push(
+              '',
+              '| | |',
+              '|---|---|',
+              `| **Branch** | \`${branch}\` |`,
+              `| **Commit** | \`${commit}\` |`,
+              `| **Built at** | \`${buildTime}\` |`,
+              '',
+              '> Preview updates automatically on every push to this PR.',
+            );
+
+            const body = lines.join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              per_page:     100,
+            });
+
+            // Delete all previous preview comments so the new one appears last
+            for (const c of comments.filter(c => c.body.includes(marker))) {
+              await github.rest.issues.deleteComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: c.id,
+              });
+            }
+
+            await github.rest.issues.createComment({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+  # ── Cleanup: delete preview deployments when a PR is closed ───────────────
+  #   Runs on both merge and manual close. Marks each deployment inactive
+  #   (required by GitHub API) then deletes it, clearing the Environments list.
+  cleanup-preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      deployments: write
+
+    steps:
+      - name: Delete preview deployments for this branch
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branch = context.payload.pull_request.head.ref;
+
+            const { data: deployments } = await github.rest.repos.listDeployments({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              ref:         branch,
+              environment: 'preview',
+              per_page:    100,
+            });
+
+            for (const deployment of deployments) {
+              // Must set inactive before deletion is allowed
+              await github.rest.repos.createDeploymentStatus({
+                owner:         context.repo.owner,
+                repo:          context.repo.repo,
+                deployment_id: deployment.id,
+                state:         'inactive',
+              });
+              await github.rest.repos.deleteDeployment({
+                owner:         context.repo.owner,
+                repo:          context.repo.repo,
+                deployment_id: deployment.id,
+              });
+            }
+            console.log(`Deleted ${deployments.length} preview deployment(s) for branch "${branch}".`);

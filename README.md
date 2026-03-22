@@ -27,6 +27,37 @@ A ready-made website template. Fork it, connect it to two free services, and you
 
 ---
 
+## Pull request previews
+
+Every time you open or update a pull request, the CI pipeline automatically:
+
+1. Builds the site and deploys it to a unique preview URL (e.g. `https://abc123--your-site.netlify.app`)
+2. Posts a comment on the PR with:
+   - A direct link to that specific preview build
+   - A link to the production site for comparison
+   - Branch name, commit hash, and build timestamp
+3. Updates the **same comment** on every new push — no spam, one comment per PR
+4. Deletes the preview deployment from the GitHub Environments list when the PR is merged or closed
+
+Example PR comment:
+
+```
+🚀 Preview ready
+
+🔍 Preview: https://abc123--your-site.netlify.app
+🌍 Production: https://your-site.netlify.app
+
+👉 Compare:
+- Open Preview
+- Open Production
+
+| Branch   | my-feature      |
+| Commit   | a1b2c3d         |
+| Built at | 2026-03-22T...  |
+```
+
+---
+
 ## One-time setup (~15 minutes)
 
 You need two free accounts: **GitHub** (stores your code) and **Netlify** (hosts your site).
@@ -58,9 +89,11 @@ This is the one technical step. It lets GitHub trigger deploys automatically.
 **Add them to GitHub:**
 
 1. In your GitHub repository, go to **Settings → Secrets and variables → Actions**
-2. Click **New repository secret** and add:
+2. On the **Secrets** tab, click **New repository secret** and add:
    - Name: `NETLIFY_AUTH_TOKEN` — paste your auth token
    - Name: `NETLIFY_SITE_ID` — paste your project ID
+3. Switch to the **Variables** tab, click **New repository variable** and add:
+   - Name: `PRODUCTION_URL` — paste your Netlify site URL (e.g. `https://my-website.netlify.app`)
 
 That's it. Push any change and your site updates automatically.
 
@@ -70,7 +103,7 @@ That's it. Push any change and your site updates automatically.
 
 - **Replace the placeholder images** in `public/images/` with your own photos
 - **Edit the text** in `src/locales/en.js` (and `pl.js` / `uk.js` for other languages)
-- **Change colors and fonts** in `src/styles/tokens.js`
+- **Change colors and fonts** in `src/styles/global.css` (CSS custom properties at the top of the file)
 - **Add your components** in `src/components/` — each section of the page is its own folder
 
 ---

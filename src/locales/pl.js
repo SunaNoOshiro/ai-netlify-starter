@@ -16,6 +16,13 @@ const pl = {
   formSend: 'Wyślij',
   formAlert: 'Formularz wysłany! (podłącz Netlify, aby zobaczyć prawdziwe zgłoszenia)',
 
+  // SEO — strona główna
+  homeMetaTitle: 'Strona główna',
+  homeMetaDesc:  'Zastąp ten opis własnym — ten tekst pojawia się w wynikach wyszukiwania Google.',
+
+  // SEO — strona O nas
+  aboutMetaDesc: 'Dowiedz się więcej o tym projekcie.',
+
   // Nawigacja
   navHome:  'Strona główna',
   navAbout: 'O nas',

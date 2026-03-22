@@ -25,6 +25,7 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 |---|---|
 | Frontend | React 18 + Vite 5 |
 | Routing | React Router v6 (`BrowserRouter` in `main.jsx`) |
+| SEO | `react-helmet-async` — `<SEO title="" description="">` component per page |
 | Styling | Tailwind CSS v4 + CSS Modules + CSS custom properties (`src/styles/global.css`) |
 | Animations | GSAP + @gsap/react (ScrollTrigger included) |
 | Tests | Vitest + jsdom + @testing-library/react |
@@ -46,6 +47,9 @@ src/
     Nav/                — sticky top bar: site name, nav links, theme/language switchers
     Footer/             — copyright + BuildBadge
     NotFound/           — 404 page, rendered by the * catch-all route
+    ErrorBoundary/      — catches React crashes; shows debug info in non-production only
+    SEO/                — per-page <title> + <meta description> via react-helmet-async
+    AboutPage/          — example second page (copy this pattern when adding pages)
     PageHeader/         — home page hero section (GSAP animations)
     MyComponent/
       MyComponent.jsx        — one default export, one responsibility, max ~80 lines
@@ -247,6 +251,31 @@ const { t } = useTranslation()
 
 Add new keys to **all three** locale files at once: `en.js`, `pl.js`, `uk.js`. Never one without the others.
 Keys: `camelCase`, feature-scoped — e.g. `contactFormTitle`.
+
+---
+
+## SEO
+
+Every page must include the `SEO` component to set the `<title>` and `<meta description>`:
+
+```jsx
+import SEO from '../SEO'
+
+export default function MyPage() {
+  const { t } = useTranslation()
+  return (
+    <div>
+      <SEO title={t.myPageTitle} description={t.myPageMetaDesc} />
+      {/* page content */}
+    </div>
+  )
+}
+```
+
+- `title` is combined with the site name automatically: `"My Page | Site Name"`
+- If `title` is omitted, only the site name is shown (use on the home page)
+- Add `myPageTitle` and `myPageMetaDesc` to **all three** locale files
+- Tests that render a component using `SEO` must wrap with `<HelmetProvider>` (from `react-helmet-async`)
 
 ---
 

@@ -1,10 +1,13 @@
 import { render, screen } from '@testing-library/react'
+import { HelmetProvider } from 'react-helmet-async'
 import { ThemeProvider } from '../../lib/theme'
 import { I18nProvider } from '../../lib/i18n'
 import AboutPage from './AboutPage'
 
 const wrapper = ({ children }) => (
-  <ThemeProvider><I18nProvider>{children}</I18nProvider></ThemeProvider>
+  <HelmetProvider>
+    <ThemeProvider><I18nProvider>{children}</I18nProvider></ThemeProvider>
+  </HelmetProvider>
 )
 
 describe('AboutPage', () => {

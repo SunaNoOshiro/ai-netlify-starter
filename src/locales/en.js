@@ -16,6 +16,13 @@ const en = {
   formSend: 'Send',
   formAlert: 'Form submitted! (connect Netlify to see real submissions)',
 
+  // SEO — home page
+  homeMetaTitle: 'Home',
+  homeMetaDesc:  'Replace this description with your own — this text appears in Google search results.',
+
+  // SEO — about page
+  aboutMetaDesc: 'Learn more about this project.',
+
   // Nav
   navHome:  'Home',
   navAbout: 'About',

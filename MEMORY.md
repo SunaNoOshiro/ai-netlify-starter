@@ -41,13 +41,34 @@ Shared context for all AI agents working on this repo.
 - Production deploy on merge to `main`
 - Build metadata injected at compile time: `__BRANCH__`, `__COMMIT__`, `__BUILD_TIME__`, `__ENV__`
 
+## SEO
+
+- `SEO` component wraps `react-helmet-async` — place it at the top of every page component
+- `HelmetProvider` is mounted in `main.jsx` (outermost provider)
+- Tests that render a component using `SEO` must wrap with `<HelmetProvider>` from `react-helmet-async`
+- Title format: `"Page Title | Site Name"` (auto-combined in `SEO.jsx`)
+
+## ErrorBoundary
+
+- Class component in `src/components/ErrorBoundary/` — wraps the entire app in `main.jsx`
+- Shows user-friendly fallback on any React crash
+- Shows collapsible `<details>` debug block (error + componentStack) only when `version.env !== 'production'`
+- Do not remove the `version.env` production guard — debug info must stay hidden in production
+
+## BuildBadge
+
+- Hidden in production: returns `null` and `console.info`s the build metadata instead
+- Visible in preview and development environments
+- Lives in `Footer` — do not move it to `PageHeader` or any other component
+
 ## Known gotchas
 
 - `window.matchMedia` is not available in jsdom — mocked in `test/setup.js`
 - `ThemeSwitcher` needs both `ThemeProvider` and `I18nProvider` in test wrappers
 - `PageHeader` test wrapper must include both providers
+- Components using `SEO` need `<HelmetProvider>` in their test wrappers
 - `src/version.js` is auto-generated — do not modify
 
 ---
 
-*Last updated: 2026-03-22 — added Layout (Nav + Footer); Nav has sticky top bar with site name, nav links, theme/language switchers; Footer has copyright + BuildBadge; PageHeader simplified to hero section only*
+*Last updated: 2026-03-22 — added SEO component (react-helmet-async), ErrorBoundary with non-prod debug info, BuildBadge hidden in production (console.info only), Layout/Nav/Footer/AboutPage/NotFound*

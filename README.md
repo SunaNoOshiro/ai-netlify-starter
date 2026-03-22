@@ -79,21 +79,38 @@ You need two free accounts: **GitHub** (stores your code) and **Netlify** (hosts
 
 This is the one technical step. It lets GitHub trigger deploys automatically.
 
-**Get your Netlify tokens:**
+**Get your Netlify auth token:**
 
-| What you need | Where to find it |
-|---|---|
-| **Auth token** | Netlify → top-right avatar → User settings → Personal access tokens → New token |
-| **Project ID** | Netlify → your site → Site configuration → General → Project ID |
+1. Click your avatar (bottom-left) → **User settings**
+2. Go to **Applications → Personal access tokens → New access token**
 
-**Add them to GitHub:**
+![Netlify – open personal access tokens](how-to/create-oauth-1.png)
 
-1. In your GitHub repository, go to **Settings → Secrets and variables → Actions**
-2. On the **Secrets** tab, click **New repository secret** and add:
-   - Name: `NETLIFY_AUTH_TOKEN` — paste your auth token
-   - Name: `NETLIFY_SITE_ID` — paste your project ID
-3. Switch to the **Variables** tab, click **New repository variable** and add:
-   - Name: `PRODUCTION_URL` — paste your Netlify site URL (e.g. `https://my-website.netlify.app`)
+3. Give it a name and set an expiration, then click **Generate token**
+
+![Netlify – create token form](how-to/create-oauth-2.png)
+
+4. Copy the token — it is only shown once
+
+![Netlify – copy the token](how-to/create-oauth-3.png)
+
+**Get your Netlify Project ID:**
+
+Go to your site → **Project configuration → General** — the Project ID is shown under **Project information**.
+
+![Netlify – Project ID location](how-to/netlify-project-id.png)
+
+**Add secrets to GitHub:**
+
+In your GitHub repository go to **Settings → Secrets and variables → Actions → Secrets tab → New repository secret** and add `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`.
+
+![GitHub – add repository secrets](how-to/github-secrets.png)
+
+**Add the production URL variable:**
+
+Switch to the **Variables** tab → **New repository variable** and add `PRODUCTION_URL` with your Netlify site URL (e.g. `https://my-website.netlify.app`).
+
+![GitHub – add repository variable](how-to/github-variables.png)
 
 That's it. Push any change and your site updates automatically.
 
@@ -102,7 +119,7 @@ That's it. Push any change and your site updates automatically.
 ## Making it your own
 
 - **Replace the placeholder images** in `public/images/` with your own photos
-- **Edit the text** in `src/locales/en.js` (and `pl.js` / `uk.js` for other languages)
+- **Edit the text** in `src/locales/en.js` (and `uk.js` / `pl.js` for other languages)
 - **Change colors and fonts** in `src/styles/global.css` (CSS custom properties at the top of the file)
 - **Add your components** in `src/components/` — each section of the page is its own folder
 

@@ -114,26 +114,19 @@ jobs:
               marker,
               '## 🚀 Preview ready',
               '',
-              `🔍 Preview: ${deployUrl}`,
+              '| | |',
+              '|---|---|',
+              `| 🔍 **Preview** | [${deployUrl}](${deployUrl}) |`,
             ];
 
             if (prodUrl) {
-              lines.push(`🌍 Production: ${prodUrl}`);
-            }
-
-            lines.push('', '👉 Compare:', `- [Open Preview](${deployUrl})`);
-
-            if (prodUrl) {
-              lines.push(`- [Open Production](${prodUrl})`);
+              lines.push(`| 🌍 **Production** | [${prodUrl}](${prodUrl}) |`);
             }
 
             lines.push(
-              '',
-              '| | |',
-              '|---|---|',
-              `| **Branch** | \`${branch}\` |`,
-              `| **Commit** | \`${commit}\` |`,
-              `| **Built at** | \`${buildTime}\` |`,
+              `| 🌿 **Branch** | \`${branch}\` |`,
+              `| 📝 **Commit** | \`${commit}\` |`,
+              `| 🕐 **Built at** | \`${buildTime}\` |`,
               '',
               '> Preview updates automatically on every push to this PR.',
             );
@@ -178,17 +171,23 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            // Fetch all preview deployments then filter by branch name manually,
+            // because the API ref filter matches the stored ref exactly and nwtgck
+            // may store it differently (short name vs refs/heads/...).
             const branch = context.payload.pull_request.head.ref;
 
             const { data: deployments } = await github.rest.repos.listDeployments({
               owner:       context.repo.owner,
               repo:        context.repo.repo,
-              ref:         branch,
               environment: 'preview',
               per_page:    100,
             });
 
-            for (const deployment of deployments) {
+            const toDelete = deployments.filter(d =>
+              d.ref === branch || d.ref === `refs/heads/${branch}`
+            );
+
+            for (const deployment of toDelete) {
               // Must set inactive before deletion is allowed
               await github.rest.repos.createDeploymentStatus({
                 owner:         context.repo.owner,
@@ -202,4 +201,4 @@ jobs:
                 deployment_id: deployment.id,
               });
             }
-            console.log(`Deleted ${deployments.length} preview deployment(s) for branch "${branch}".`);
+            console.log(`Deleted ${toDelete.length} preview deployment(s) for branch "${branch}".`);

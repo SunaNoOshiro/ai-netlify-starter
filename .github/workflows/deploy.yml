@@ -90,7 +90,42 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID:    ${{ secrets.NETLIFY_SITE_ID }}
 
-      # ── 9. Comment preview URL on PR ─────────────────────────────────────────
+      # ── 9. Clean up old production deployments ───────────────────────────────
+      #   Each push to main creates a new GitHub deployment record. Keep only
+      #   the current one — mark all older production deployments inactive and
+      #   delete them so the Environments list stays clean.
+      - name: Clean up old production deployments
+        if: github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: deployments } = await github.rest.repos.listDeployments({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              environment: 'production',
+              per_page:    100,
+            });
+
+            // Keep the newest deployment (index 0 — API returns newest first).
+            // Delete everything else.
+            const toDelete = deployments.slice(1);
+            for (const deployment of toDelete) {
+              await github.rest.repos.createDeploymentStatus({
+                owner:         context.repo.owner,
+                repo:          context.repo.repo,
+                deployment_id: deployment.id,
+                state:         'inactive',
+              });
+              await github.rest.repos.deleteDeployment({
+                owner:         context.repo.owner,
+                repo:          context.repo.repo,
+                deployment_id: deployment.id,
+              });
+            }
+            console.log(`Removed ${toDelete.length} old production deployment(s).`);
+
+      # ── 10. Comment preview URL on PR ────────────────────────────────────────
       #   Uses a hidden HTML marker to find an existing bot comment and update
       #   it in-place, preventing comment spam on repeated pushes to the same PR.
       - name: Comment preview URL on PR
@@ -174,10 +209,19 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // Fetch all preview deployments then filter by branch name manually,
-            // because the API ref filter matches the stored ref exactly and nwtgck
-            // may store it differently (short name vs refs/heads/...).
             const branch = context.payload.pull_request.head.ref;
+
+            // Collect SHAs for every commit ever pushed to this PR.
+            // nwtgck stores the deployment ref as a SHA (not a branch name),
+            // so matching by branch ref alone only catches the latest push.
+            // Matching every PR commit SHA catches all pushes reliably.
+            const { data: commits } = await github.rest.pulls.listCommits({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              pull_number: context.issue.number,
+              per_page:    100,
+            });
+            const prShas = new Set(commits.map(c => c.sha));
 
             const { data: deployments } = await github.rest.repos.listDeployments({
               owner:       context.repo.owner,
@@ -186,12 +230,10 @@ jobs:
               per_page:    100,
             });
 
-            const headSha = context.payload.pull_request.head.sha;
-
             const toDelete = deployments.filter(d =>
               d.ref === branch ||
               d.ref === `refs/heads/${branch}` ||
-              d.sha === headSha
+              prShas.has(d.sha)
             );
 
             for (const deployment of toDelete) {

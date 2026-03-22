@@ -9,6 +9,9 @@ on:
 # The AI agent (Claude / Codex) is responsible for running `npm test`
 # locally before every commit. See AGENTS.md / CLAUDE.md.
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest

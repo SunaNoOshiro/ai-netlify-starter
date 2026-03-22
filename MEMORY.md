@@ -52,8 +52,19 @@ Shared context for all AI agents working on this repo.
 - `sitemap.xml` and `robots.txt` are both **auto-generated** at build time — never create static versions in `public/`
 - Plugin logic lives in `vite.plugins.js`; the core parser `parseRoutePaths(src)` is a pure function tested in `test/vite-plugins.test.js`
 - Routes are parsed from `<Route path="...">` in `src/App.jsx` automatically — no manual list to maintain; supports multi-line Route declarations
-- Build output verified by `test/build.integration.test.js` (runs `npm run build`, checks `dist/` files)
-- Both files use `hostname` from `VITE_APP_URL` (fallback: `https://example.com`)
+- Build output verified by `test/build.integration.test.js` (runs production + preview builds, checks `dist/` files)
+- Hostname priority: `VITE_APP_URL` → `URL` (Netlify's built-in) → `https://example.com`
+- **Production only**: `sitemap.xml` generated + `robots.txt` with `Allow: /`
+- **Preview / dev**: no `sitemap.xml`; `robots.txt` blocks all crawlers (`Disallow: /`)
+
+## Toast notifications
+
+- `ToastProvider` + `useToast` in `src/lib/toast.jsx`; visual component in `src/components/Toast/`
+- `ToastProvider` is mounted in `main.jsx` inside `I18nProvider` — available app-wide
+- API: `const { toast } = useToast()` → `toast.success/error/warning/info(message, { duration? })`
+- Default durations: success/info = 4 s, warning = 5 s, error = 6 s; pass `{ duration: ms }` to override
+- Toast messages are plain strings — localise at the call site with `t.keyName`
+- Tests using `useToast()` must wrap with `<ToastProvider>` inside `<I18nProvider>`
 
 ## ErrorBoundary
 
@@ -78,4 +89,4 @@ Shared context for all AI agents working on this repo.
 
 ---
 
-*Last updated: 2026-03-22 — SEO complete: html[lang], og:image+twitter:card, robots.txt+sitemap auto-generated from App.jsx routes; unit + build integration tests added*
+*Last updated: 2026-03-22 — Toast system; SEO complete (html[lang], og:image, sitemap+robots env-aware); README, AGENTS.md, MEMORY.md all updated*

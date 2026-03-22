@@ -42,6 +42,9 @@ const pl = {
   themeSwitchToDark:  'Przełącz na tryb ciemny',
   themeSwitchToLight: 'Przełącz na tryb jasny',
   themeSwitchToAuto:  'Użyj ustawień systemowych',
+
+  // Powiadomienia toast
+  toastDismiss: 'Zamknij powiadomienie',
 }
 
 export default pl

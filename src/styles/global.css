@@ -58,10 +58,28 @@
   /* Transitions */
   --transition-fast:   all 0.15s ease;
   --transition-normal: all 0.25s ease;
+
+  /* Toast colours */
+  --color-toast-success-bg:   #dcfce7;
+  --color-toast-success-text: #166534;
+  --color-toast-error-bg:     #fee2e2;
+  --color-toast-error-text:   #991b1b;
+  --color-toast-warning-bg:   #fef9c3;
+  --color-toast-warning-text: #92400e;
+  --color-toast-info-bg:      #dbeafe;
+  --color-toast-info-text:    #1e40af;
 }
 
 /* Dark mode overrides — set via data-theme="dark" on <html> */
 [data-theme="dark"] {
+  --color-toast-success-bg:   #14532d;
+  --color-toast-success-text: #bbf7d0;
+  --color-toast-error-bg:     #7f1d1d;
+  --color-toast-error-text:   #fecaca;
+  --color-toast-warning-bg:   #78350f;
+  --color-toast-warning-text: #fef08a;
+  --color-toast-info-bg:      #1e3a8a;
+  --color-toast-info-text:    #bfdbfe;
   --color-primary:       #e2e8f0;
   --color-primary-hover: #f1f5f9;
   --color-white:         #1e293b;

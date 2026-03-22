@@ -16,6 +16,8 @@ A ready-made website template. Fork it, connect it to two free services, and you
 - **Contact form included** — visitors can message you, submissions land in your Netlify dashboard
 - **Ukrainian / English / Polish** — language switcher built in, easy to add more
 - **Placeholder images** — broken images show a clean fallback instead of a broken icon
+- **SEO ready** — per-page titles and descriptions, `sitemap.xml` and `robots.txt` generated automatically at build time; search engines are blocked from preview deploys
+- **Toast notifications** — `toast.success()` / `toast.error()` available everywhere, no setup needed
 
 ---
 
@@ -140,4 +142,5 @@ npm run dev        # opens http://localhost:5173
 
 - **Preview not updating?** — check the Actions tab in GitHub for errors
 - **Form not working?** — the contact form only accepts submissions on the live production site, not previews
+- **sitemap.xml showing `example.com`?** — this only appears on production builds; Netlify's `URL` variable is used automatically. If you have a custom domain, set `VITE_APP_URL=https://your-domain.com` in Netlify → Site configuration → Environment variables
 - **Something broken?** — open an issue in this repository

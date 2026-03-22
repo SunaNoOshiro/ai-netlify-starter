@@ -42,6 +42,9 @@ const en = {
   themeSwitchToDark:  'Switch to dark mode',
   themeSwitchToLight: 'Switch to light mode',
   themeSwitchToAuto:  'Switch to system mode',
+
+  // Toast notifications
+  toastDismiss: 'Dismiss notification',
 }
 
 export default en

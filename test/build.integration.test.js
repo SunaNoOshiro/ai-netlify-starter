@@ -4,51 +4,60 @@ import { resolve } from 'path'
 
 const dist = (file) => resolve('./dist', file)
 
-// Run once before all tests in this file.
-beforeAll(() => {
-  execSync('npm run build', { stdio: 'pipe' })
-}, 30_000)
+const buildProd = (env = '') =>
+  execSync(`${env} VITE_ENV=production npm run build`, { stdio: 'pipe' })
 
-describe('build output — sitemap.xml', () => {
+const buildPreview = () =>
+  execSync('VITE_ENV=preview npm run build', { stdio: 'pipe' })
+
+// ── Production build ──────────────────────────────────────────────────────────
+describe('production build — sitemap.xml', () => {
+  beforeAll(() => buildProd('VITE_APP_URL=https://mysite.com'), 30_000)
+
   it('is generated', () => {
     expect(existsSync(dist('sitemap.xml'))).toBe(true)
   })
 
   it('contains the home route', () => {
     const xml = readFileSync(dist('sitemap.xml'), 'utf8')
-    expect(xml).toContain('<loc>https://example.com/</loc>')
+    expect(xml).toContain('<loc>https://mysite.com/</loc>')
   })
 
   it('contains the about route', () => {
     const xml = readFileSync(dist('sitemap.xml'), 'utf8')
-    expect(xml).toContain('<loc>https://example.com/about</loc>')
+    expect(xml).toContain('<loc>https://mysite.com/about</loc>')
   })
 
   it('does not contain the catch-all * route', () => {
     const xml = readFileSync(dist('sitemap.xml'), 'utf8')
     expect(xml).not.toContain('*')
   })
-
-  it('uses VITE_APP_URL when set', () => {
-    execSync('VITE_APP_URL=https://mysite.com npm run build', { stdio: 'pipe' })
-    const xml = readFileSync(dist('sitemap.xml'), 'utf8')
-    expect(xml).toContain('<loc>https://mysite.com/</loc>')
-  }, 30_000)
 })
 
-describe('build output — robots.txt', () => {
-  it('is generated', () => {
-    expect(existsSync(dist('robots.txt'))).toBe(true)
-  })
-
+describe('production build — robots.txt', () => {
   it('allows all crawlers', () => {
     const txt = readFileSync(dist('robots.txt'), 'utf8')
     expect(txt).toContain('User-agent: *')
     expect(txt).toContain('Allow: /')
   })
 
-  it('points Sitemap to the correct hostname', () => {
+  it('points Sitemap to VITE_APP_URL', () => {
     const txt = readFileSync(dist('robots.txt'), 'utf8')
     expect(txt).toContain('Sitemap: https://mysite.com/sitemap.xml')
+  })
+})
+
+// ── Preview build ─────────────────────────────────────────────────────────────
+describe('preview build', () => {
+  beforeAll(() => buildPreview(), 30_000)
+
+  it('robots.txt blocks all crawlers', () => {
+    const txt = readFileSync(dist('robots.txt'), 'utf8')
+    expect(txt).toContain('Disallow: /')
+    expect(txt).not.toContain('Allow: /')
+  })
+
+  it('does not generate sitemap.xml', () => {
+    expect(existsSync(dist('sitemap.xml'))).toBe(false)
   })
 })

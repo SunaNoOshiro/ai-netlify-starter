@@ -17,14 +17,27 @@ function getRoutesFromApp() {
   return parseRoutePaths(src)
 }
 
+// Hostname resolution (in priority order):
+//   1. VITE_APP_URL — set by the user for their production domain
+//   2. URL          — Netlify's built-in site URL env var (production URL on all deploys)
+//   3. fallback     — placeholder so the build never fails
+export const hostname =
+  process.env.VITE_APP_URL ||
+  process.env.URL ||
+  'https://example.com'
+
+// true only when building the production deploy
+const isProduction = process.env.VITE_ENV === 'production'
+
 /**
  * Generates dist/sitemap.xml by parsing routes from src/App.jsx.
- * Uses VITE_APP_URL as the hostname (fallback: https://example.com).
+ * Only emitted on production builds — previews don't need a sitemap.
  */
-export function sitemapPlugin(hostname) {
+export function sitemapPlugin() {
   return {
     name: 'generate-sitemap',
     generateBundle() {
+      if (!isProduction) return
       const now = new Date().toISOString()
       const urls = getRoutesFromApp()
         .map(path => `\n  <url>\n    <loc>${hostname}${path}</loc>\n    <lastmod>${now}</lastmod>\n  </url>`)
@@ -40,18 +53,19 @@ export function sitemapPlugin(hostname) {
 }
 
 /**
- * Generates dist/robots.txt pointing to the correct sitemap URL.
- * Uses VITE_APP_URL as the hostname (fallback: https://example.com).
+ * Generates dist/robots.txt.
+ * Production: allows all crawlers + points to sitemap.
+ * Preview / development: blocks all crawlers (Disallow: /).
  */
-export function robotsPlugin(hostname) {
+export function robotsPlugin() {
   return {
     name: 'generate-robots-txt',
     generateBundle() {
-      this.emitFile({
-        type: 'asset',
-        fileName: 'robots.txt',
-        source: `User-agent: *\nAllow: /\n\nSitemap: ${hostname}/sitemap.xml\n`,
-      })
+      const source = isProduction
+        ? `User-agent: *\nAllow: /\n\nSitemap: ${hostname}/sitemap.xml\n`
+        : `# Preview deploy — do not index\nUser-agent: *\nDisallow: /\n`
+
+      this.emitFile({ type: 'asset', fileName: 'robots.txt', source })
     },
   }
 }

@@ -42,6 +42,9 @@ const uk = {
   themeSwitchToDark:  'Перейти до темного режиму',
   themeSwitchToLight: 'Перейти до світлого режиму',
   themeSwitchToAuto:  'Використовувати системні налаштування',
+
+  // Сповіщення toast
+  toastDismiss: 'Закрити сповіщення',
 }
 
 export default uk

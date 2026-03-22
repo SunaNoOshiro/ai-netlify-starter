@@ -16,6 +16,8 @@ Vite 5 + React 18 website template with automated CI/CD. No backend, no AI SDK p
 - **i18n** — EN / PL / UK, switchable in the UI
 - **Contact form** — Netlify Forms (blocked on preview to save quota)
 - **Build metadata** — branch, commit, env, build time visible in the UI footer
+- **SEO** — per-page `<title>` + `<meta description>`; `sitemap.xml` + `robots.txt` auto-generated at build time (production only; previews are blocked from crawlers)
+- **Toast notifications** — `useToast()` hook, available app-wide via `ToastProvider` in `main.jsx`
 
 ---
 
@@ -49,6 +51,7 @@ src/
     NotFound/           — 404 page, rendered by the * catch-all route
     ErrorBoundary/      — catches React crashes; shows debug info in non-production only
     SEO/                — per-page <title> + <meta description> via react-helmet-async
+    Toast/              — toast notification UI; logic in src/lib/toast.jsx
     AboutPage/          — example second page (copy this pattern when adding pages)
     PageHeader/         — home page hero section (GSAP animations)
     MyComponent/
@@ -90,9 +93,22 @@ npm run test:watch     # watch mode
 npm run test:coverage  # coverage → coverage/
 npm run test:bdd       # BDD acceptance tests (Playwright + Gherkin)
 npm run test:bdd:ui    # BDD tests in headed browser (for debugging)
-npm run build          # production build → dist/
+npm run build          # production build → dist/ (also generates sitemap.xml + robots.txt)
 npm run setup-hooks    # install pre-commit hook (once after clone)
 ```
+
+---
+
+## Environment variables
+
+All `VITE_*` variables are embedded into the browser bundle at build time. See `.env.example` for the full list.
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_APP_NAME` | no | Display name used in Nav, page title, footer. Default: `AI Starter` |
+| `VITE_APP_URL` | no | Production domain (e.g. `https://example.com`). Used for `og:image` and `sitemap.xml`. Netlify's `URL` env var is used as an automatic fallback — only set this if you have a custom domain |
+| `VITE_ENV` | CI only | One of `development` \| `preview` \| `production`. Injected by GitHub Actions |
+| `VITE_BRANCH`, `VITE_COMMIT`, `VITE_BUILD_TIME` | CI only | Injected by GitHub Actions for the build badge |
 
 ---
 
@@ -280,6 +296,33 @@ export default function MyPage() {
 
 ---
 
+## Toast notifications
+
+Use `useToast()` to show success, error, warning, or info messages from any component:
+
+```jsx
+import { useToast } from '../lib/toast'
+
+export default function MyComponent() {
+  const { toast } = useToast()
+
+  function handleSave() {
+    toast.success('Saved!')           // auto-dismisses after 4 s
+    toast.error('Something failed')   // auto-dismisses after 6 s
+    toast.warning('Check your input') // auto-dismisses after 5 s
+    toast.info('Loading...')          // auto-dismisses after 4 s
+  }
+}
+```
+
+Pass a custom duration (ms) as a second argument: `toast.success('Done', { duration: 2000 })`.
+
+- `ToastProvider` is already mounted in `main.jsx` — no setup needed in individual components
+- Toast messages are plain strings passed by the caller — localise them at the call site with `t.keyName`
+- Tests that use `useToast()` must wrap with `<ToastProvider>` (inside `<I18nProvider>`)
+
+---
+
 ## Testing
 
 - Unit tests: co-located — `ComponentName/ComponentName.test.jsx`.
@@ -357,3 +400,4 @@ Examples: `feat: add hero image component` · `fix: block form on preview` · `s
 - Run `npm test` in CI — it runs only via the pre-commit hook.
 - Modify `src/version.js` — it is auto-generated at build time.
 - Add `robots.txt` or `sitemap.xml` to `public/` — both are generated at build time by `vite.plugins.js`.
+- Modify the robots/sitemap behaviour without understanding the env logic — production gets `Allow: /` + sitemap; preview/dev gets `Disallow: /` and no sitemap.

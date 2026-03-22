@@ -3,14 +3,12 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { sitemapPlugin, robotsPlugin } from './vite.plugins.js'
 
-const hostname = process.env.VITE_APP_URL || 'https://example.com'
-
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    sitemapPlugin(hostname),
-    robotsPlugin(hostname),
+    sitemapPlugin(),
+    robotsPlugin(),
   ],
 
   // Build metadata baked in at compile time via GitHub Actions env vars.
